@@ -2,6 +2,7 @@
 #   directory
 # Using urllib bc i don't know how to use other things idk what would
 #   work best in this situation
+import urllib
 from urllib import request
 
 # This is the base URL for searches, the URL changes to 
