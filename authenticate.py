@@ -2,8 +2,7 @@
 #   directory
 # Using urllib bc i don't know how to use other things idk what would
 #   work best in this situation
-import urllib
-from urllib import request
+import requests
 
 # This is the base URL for searches, the URL changes to 
 #   DIRECTORY_URL + ?search='search here' when used, so just concat it and
@@ -29,8 +28,56 @@ def checkUMBCStatus(userMsg):
     # Valid ID
     if any(char.isdigit() for char in userMsg) and '1 result found' in response.text:
         #TODO remove the non-verified role
-        await 1
+        return 1
     elif '@' in userMsg:
         return 2
     else:
         return 0
+
+'''
+ checkExistingAuth(userName, userMsg) checks to see if the given userName or use
+ userMsg (containing an e-mail or campus ID) exist in the whitelist.
+ 
+ Input:
+    userName    = string, user's Discord name
+    userMsg     = string, user's inputted UMBC campus ID/email
+ Output:
+    0           = Failure
+    1           = Pass, not in whitelist
+    2           = Already used e-mail/ID
+    3           = Discord account already authenticated
+'''
+def checkExistingAuth(userName, userMsg):
+    try:
+        whitelist = open("whitelist.txt")
+    except:
+        print("Whitelist could not be opened, is it in this dir?")
+        return 0
+    for l in whitelist.readlines():
+        if (userName in l):
+            print("You have already authenticated this account.. Why are you doing it again?")
+            return 3
+        elif (userMsg in l):
+            print("You have already used that e-mail/campus ID to authenticate an account. A request will be sent to an admin to manuall authenticate.")
+            return 2
+    return 1
+
+'''
+ validateUserMsg(userMsg) validates the user's message to make sure it either
+ appears that it's a valid UMBC e-mail or campus ID.
+ 
+ Input:
+    userMsg     = string, user's message on Discord of their e-mail/ID
+ Output:
+    0           = Fail, not valid looking
+    1           = Pass, valid
+'''
+def validateUserMsg(userMsg):
+    # Check for e-mail
+    if ('@umbc.edu' in userMsg):
+        return 1
+    # Check for Campus ID TODO - Have this validate the form rather than len
+    if len(userMsg) == 7:
+        return 1
+    # Else, fail
+    return 0

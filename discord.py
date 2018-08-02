@@ -14,22 +14,14 @@ SERVER_ID = '360868374244491264'
 CLIENT = Bot(command_prefix=BOT_PREFIX)
 
 ''' Helper Methods '''
-def fetchToken()
+def fetchToken():
     # assuming that this is running in the same dir. as discord-keys.txt
     try:
         with open('discord-keys.txt') as f:
             return f.readlines()[0]
-    else:
+    except:
         print("Error opening 'discord-keys.txt', FATAL.")
         return 0
-
-async def list_servers():
-    await client.wait_until_ready()
-    while not client.is_closed:
-        print('Current servers:')
-        for server in client.servers:
-            print(server.name)
-        await asyncio.sleep(600)
 
 ''' Bot Methods '''
 @client.command(name='setupServer',
@@ -45,7 +37,7 @@ async def setupServer(*args):
     await client.say('Make sure to set the default non-verified role permissions.')
     #TODO create the new channels needed
     await client.create_channel(SERVER_ID, 'verification', *overwrites, type=discord.ChannelType.text)
-    await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites type=discord.ChannelType.text)
+    await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites, type=discord.ChannelType.text)
 
 
 @client.command(name='setAllNotVerified',

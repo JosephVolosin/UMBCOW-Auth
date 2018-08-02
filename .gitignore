@@ -1,2 +1,4 @@
 discord-keys.txt
 .vscode
+*.pyc
+__pycache__
