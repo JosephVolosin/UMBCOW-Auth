@@ -2,18 +2,17 @@
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
 import authenticate, discord, asyncio, aiohttp
-from discord import Game
 from discord.ext.commands import Bot
 
 '''
 Constants
 '''
 BOT_PREFIX = ('?', '!')
-TOKEN = fetchToken()
-SERVER_ID = '360868374244491264'
-CLIENT = Bot(command_prefix=BOT_PREFIX)
+SERVER_ID = '455912302202322958'
+client = Bot(command_prefix=BOT_PREFIX)
 
 ''' Helper Methods '''
+<<<<<<< HEAD:discord.py
 def fetchToken():
     # assuming that this is running in the same dir. as discord-keys.txt
     try:
@@ -23,13 +22,38 @@ def fetchToken():
         print("Error opening 'discord-keys.txt', FATAL.")
         return 0
 
+=======
+# Fetch the bot's token
+def fetchToken():
+	# assuming that this is running in the same dir. as discord-keys.txt
+	try:
+		with open('discord-keys.txt') as f:
+			for l in f.readlines():
+				if('BOT_TOKEN' in l):
+					return l[l.find('=') + 1:]
+	except:
+		print("Error opening 'discord-keys.txt', FATAL.")
+		return 0
+
+# List all the servers bot is deployed to
+async def list_servers():
+    await client.wait_until_ready()
+    while not client.is_closed:
+        print('Current servers:')
+        for server in client.servers:
+            print(server.name)
+        await asyncio.sleep(600)
+
+>>>>>>> working:umbc-bot.py
 ''' Bot Methods '''
+# setupServer() creates the unverified role 
 @client.command(name='setupServer',
                 description='sets the server up to use the verification system',
                 breif='sets the server up to use the verification system',
                 aliases=['setupserver', 'setup', 's'],
                 pass_context=True)
 async def setupServer(*args):
+<<<<<<< HEAD:discord.py
     #TODO create the non-verified role
     await client.create_role(SERVER_ID, name='NotVerified')
     await client.say('Created a NotVerified role')
@@ -39,24 +63,36 @@ async def setupServer(*args):
     await client.create_channel(SERVER_ID, 'verification', *overwrites, type=discord.ChannelType.text)
     await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites, type=discord.ChannelType.text)
 
+=======
+	# Create the 'Unverified' role
+	server = args[0].message.author.server
+	await client.create_role(server, name='Unverified')
+	await client.say('Created a Unverified role')
+>>>>>>> working:umbc-bot.py
 
+	# Create the 'Verified' role
+	await client.create_role(server, name="Verified")
+	await client.say('Created a Verified role')
+	
+# setAllNotVerified() gives everyone the unverified role
 @client.command(name='setAllNotVerified',
 		description='setsall users in the server to a NotVerified role',
 		breif='sets all users in the server to a NotVerified role',
 		aliases=['setANV','fukAllYall'],
 		pass_context=True)
-#TODO make a !setallNotVerified command so that it gives all users a non-verified role
 async def setAllNotVerified(*args):
-	role = discord.utils.get(args[0].server.roles, name='NotVerified')
-	serverMembers = args.server.members
+	server = args[0].message.author.server
+	role = discord.utils.get(server.roles, name='Unverified')
+	serverMembers = server.members
 	for member in serverMembers:
+		print("\t" + str(member) + " - set as 'Unverified'")
 		await client.add_roles(member, role)
 
 
 @client.event
 async def on_ready():
-    await client.change_presence(game=Game(name='!verify for help'))
-    print('Logged in as ' + CLIENT.user.name)
+    await client.change_presence(game=discord.Game(name='!verify for help'))
+    print('Logged in as ' + client.user.name)
 
 #TODO: overwrite discord.on_member_join
 @client.command(name='verify',
@@ -78,27 +114,34 @@ async def verify(*args):
 	#!v <umbc argument>
 	else:
 		await client.say('verifying ID... please hold') #debugging line
-		url = url_search + message.split()[1]
-		response = requests.get(url)
+		res = authenticate.authenticateUser(message)
+		server = args[0].message.author.server
+		verified = discord.utils.get(server.roles, name='Verified')
+		unverified = discord.utils.get(server.roles, name='Unverified')
 
-		#valid ID if: has at least one digit, and only one result was found
-		if any(char.isdigit() for char in message.split()[1]) and '1 result found' in response.text:
-			#TODO remove the non-verified role
-			await client.say('Your UMBC status has been verified, welcome to the UMBC Overwatch Club')
-
-		elif '@' in message.split()[1]:
-			await client.say('Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification')
-			await client.send_message(client.get_channel(CHANNEL_VERIFICATION_ADMIN_ONLY_ID), 'Review required:\nUsername: ' + str(args[0].message.author) + '\nVerification tag: ' + args[0].message.content.split()[1])
-		else:
-			#TODO implement count system so @ 3 failures they are sent to the admins to be reviewed
+		# Check result
+		if(res == 0):
+			print("Check failed.")
 			await client.say('Sorry, either we could not verify your ID or something else unexpected went wrong. Please try again.\nverify_simple_search_check_error')
-	
+		elif(res == 1):
+			print("Check succeeded.")
+			await client.say("Your UMBC status has been verified, welcome to the UMBC Overwatch Club")
+			await client.add_roles(args[0].message.author, verified)
+			await client.remove_roles(args[0].message.author, unverified)
+			message = message[message.find(" ") + 1:]
+			whitelist.write(args[0].message.author + "," + message)
+		elif(res == 2):
+			print("Further contact needed.")
+			await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
+
+
 
 ''' Run '''
 if __name__ == '__main__':
-    client.loop.create_task(list_servers())
-    if(TOKEN == 0):
-        print("Token was not found, therefore bot can't run.")
-        exit()
-    else:
-        client.run(TOKEN)
+	token = fetchToken()
+	client.loop.create_task(list_servers())
+	if(token == 0):
+		print("Token was not found, therefore bot can't run.")
+		exit()
+	else:
+		client.run(token)
