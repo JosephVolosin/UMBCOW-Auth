@@ -26,8 +26,8 @@ def checkUMBCStatus(userMsg):
         print("Server could not be contacted, status code '" +
                 str(resp.status_code))
     # Search results
-    if any(char.isdigit() for char in userMsg) and
-            '1 result found' in response.text:
+    if (any(char.isdigit() for char in userMsg) and
+            ('1 result found' in response.text)):
         return 1
     elif '@' in userMsg:
         return 2

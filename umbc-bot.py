@@ -2,7 +2,6 @@
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
 import authenticate, discord, asyncio, aiohttp
-from discord import Game
 from discord.ext.commands import Bot
 
 '''
@@ -14,15 +13,19 @@ SERVER_ID = '360868374244491264'
 CLIENT = Bot(command_prefix=BOT_PREFIX)
 
 ''' Helper Methods '''
-def fetchToken()
-    # assuming that this is running in the same dir. as discord-keys.txt
-    try:
-        with open('discord-keys.txt') as f:
-            return f.readlines()[0]
-    else:
-        print("Error opening 'discord-keys.txt', FATAL.")
-        return 0
+# Fetch the bot's token
+def fetchToken():
+	# assuming that this is running in the same dir. as discord-keys.txt
+	try:
+		with open('discord-keys.txt') as f:
+			for l in f.readlines():
+				if('BOT_TOKEN' in l):
+					return l[l.find('='):]
+	except:
+		print("Error opening 'discord-keys.txt', FATAL.")
+		return 0
 
+# List all the servers bot is deployed to
 async def list_servers():
     await client.wait_until_ready()
     while not client.is_closed:
@@ -32,28 +35,27 @@ async def list_servers():
         await asyncio.sleep(600)
 
 ''' Bot Methods '''
+# setupServer() creates the unverified role 
 @client.command(name='setupServer',
                 description='sets the server up to use the verification system',
                 breif='sets the server up to use the verification system',
                 aliases=['setupserver', 'setup', 's'],
                 pass_context=True)
 async def setupServer(*args):
-    #TODO create the non-verified role
-    await client.create_role(SERVER_ID, name='NotVerified')
-    await client.say('Created a NotVerified role')
-    #TODO make the user hide all channels to the non-verified role
-    await client.say('Make sure to set the default non-verified role permissions.')
-    #TODO create the new channels needed
-    await client.create_channel(SERVER_ID, 'verification', *overwrites, type=discord.ChannelType.text)
-    await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites type=discord.ChannelType.text)
-
-
+	# Create the 'unverified' role
+	await client.create_role(SERVER_ID, name='Unverified')
+	await client.say('Created a Unverified role')
+	''' Is this necessary?
+	#TODO create the new channels needed
+	await client.create_channel(SERVER_ID, 'verification', *overwrites, type=discord.ChannelType.text)
+	await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites type=discord.ChannelType.text)
+	'''
+# setAllNotVerified() gives everyone the unverified role
 @client.command(name='setAllNotVerified',
 		description='setsall users in the server to a NotVerified role',
 		breif='sets all users in the server to a NotVerified role',
 		aliases=['setANV','fukAllYall'],
 		pass_context=True)
-#TODO make a !setallNotVerified command so that it gives all users a non-verified role
 async def setAllNotVerified(*args):
 	role = discord.utils.get(args[0].server.roles, name='NotVerified')
 	serverMembers = args.server.members
@@ -63,7 +65,7 @@ async def setAllNotVerified(*args):
 
 @client.event
 async def on_ready():
-    await client.change_presence(game=Game(name='!verify for help'))
+    await client.change_presence(game=discord.Game(name='!verify for help'))
     print('Logged in as ' + CLIENT.user.name)
 
 #TODO: overwrite discord.on_member_join
