@@ -92,7 +92,8 @@ async def verify(*args):
 		await client.say('verifying ID... please hold') #debugging line
 		res = authenticate.authenticateUser(message)
 		server = args[0].message.author.server
-		role = discord.utils.get(server.roles, name='Verified')
+		verified = discord.utils.get(server.roles, name='Verified')
+		unverified = discord.utils.get(server.roles, name='Unverified')
 
 		# Check result
 		if(res == 0):
@@ -101,7 +102,10 @@ async def verify(*args):
 		elif(res == 1):
 			print("Check succeeded.")
 			await client.say("Your UMBC status has been verified, welcome to the UMBC Overwatch Club")
-			await client.add_roles(args[0].message.author, role)
+			await client.add_roles(args[0].message.author, verified)
+			await client.remove_roles(args[0].message.author, unverified)
+			message = message[message.find(" ") + 1:]
+			whitelist.write(args[0].message.author + "," + message)
 		elif(res == 2):
 			print("Further contact needed.")
 			await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
