@@ -6,8 +6,9 @@ import requests
 
 ''' Constants '''
 DIRECTORY_URL = "https://www.umbc.edu/search/directory/?search="
+
 '''
- checkUMBCStatus() sends a request to the website to show that it's available
+ authenticateUser() attempts to authenticate a user
  Input:
    userMsg = string, user's username or ID
  Output:
@@ -15,7 +16,7 @@ DIRECTORY_URL = "https://www.umbc.edu/search/directory/?search="
    1 = Success
    2 = Further contact needed
 '''
-def checkUMBCStatus(userMsg):
+def authenticateUser(userMsg):
     
     url = DIRECTORY_URL + userMsg
     resp = requests.get(url)

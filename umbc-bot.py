@@ -8,9 +8,8 @@ from discord.ext.commands import Bot
 Constants
 '''
 BOT_PREFIX = ('?', '!')
-TOKEN = fetchToken()
-SERVER_ID = '360868374244491264'
-CLIENT = Bot(command_prefix=BOT_PREFIX)
+SERVER_ID = '455912302202322958'
+client = Bot(command_prefix=BOT_PREFIX)
 
 ''' Helper Methods '''
 # Fetch the bot's token
@@ -20,7 +19,7 @@ def fetchToken():
 		with open('discord-keys.txt') as f:
 			for l in f.readlines():
 				if('BOT_TOKEN' in l):
-					return l[l.find('='):]
+					return l[l.find('=') + 1:]
 	except:
 		print("Error opening 'discord-keys.txt', FATAL.")
 		return 0
@@ -43,13 +42,13 @@ async def list_servers():
                 pass_context=True)
 async def setupServer(*args):
 	# Create the 'unverified' role
-	await client.create_role(SERVER_ID, name='Unverified')
+	server = args[0].message.author.server
+	try:
+		await client.create_role(server, name='Unverified')
+	except:
+		quit()
 	await client.say('Created a Unverified role')
-	''' Is this necessary?
-	#TODO create the new channels needed
-	await client.create_channel(SERVER_ID, 'verification', *overwrites, type=discord.ChannelType.text)
-	await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites type=discord.ChannelType.text)
-	'''
+
 # setAllNotVerified() gives everyone the unverified role
 @client.command(name='setAllNotVerified',
 		description='setsall users in the server to a NotVerified role',
@@ -57,16 +56,18 @@ async def setupServer(*args):
 		aliases=['setANV','fukAllYall'],
 		pass_context=True)
 async def setAllNotVerified(*args):
-	role = discord.utils.get(args[0].server.roles, name='NotVerified')
-	serverMembers = args.server.members
+	server = args[0].message.author.server
+	role = discord.utils.get(server.roles, name='Unverified')
+	serverMembers = server.members
 	for member in serverMembers:
+		print("\t" + str(member) + " - set as 'Unverified'")
 		await client.add_roles(member, role)
 
 
 @client.event
 async def on_ready():
     await client.change_presence(game=discord.Game(name='!verify for help'))
-    print('Logged in as ' + CLIENT.user.name)
+    print('Logged in as ' + client.user.name)
 
 #TODO: overwrite discord.on_member_join
 @client.command(name='verify',
@@ -88,27 +89,27 @@ async def verify(*args):
 	#!v <umbc argument>
 	else:
 		await client.say('verifying ID... please hold') #debugging line
-		url = url_search + message.split()[1]
-		response = requests.get(url)
+		res = authenticate.authenticateUser(message)
 
-		#valid ID if: has at least one digit, and only one result was found
-		if any(char.isdigit() for char in message.split()[1]) and '1 result found' in response.text:
-			#TODO remove the non-verified role
-			await client.say('Your UMBC status has been verified, welcome to the UMBC Overwatch Club')
-
-		elif '@' in message.split()[1]:
-			await client.say('Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification')
-			await client.send_message(client.get_channel(CHANNEL_VERIFICATION_ADMIN_ONLY_ID), 'Review required:\nUsername: ' + str(args[0].message.author) + '\nVerification tag: ' + args[0].message.content.split()[1])
-		else:
-			#TODO implement count system so @ 3 failures they are sent to the admins to be reviewed
+		# Check result
+		if(res == 0):
+			print("Check failed.")
 			await client.say('Sorry, either we could not verify your ID or something else unexpected went wrong. Please try again.\nverify_simple_search_check_error')
-	
+		elif(res == 1):
+			print("Check succeeded.")
+			await client.say("Your UMBC status has been verified, welcome to the UMBC Overwatch Club")
+		elif(res == 2):
+			print("Further contact needed.")
+			await clinet.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
+			
+
 
 ''' Run '''
 if __name__ == '__main__':
-    client.loop.create_task(list_servers())
-    if(TOKEN == 0):
-        print("Token was not found, therefore bot can't run.")
-        exit()
-    else:
-        client.run(TOKEN)
+	token = fetchToken()
+	client.loop.create_task(list_servers())
+	if(token == 0):
+		print("Token was not found, therefore bot can't run.")
+		exit()
+	else:
+		client.run(token)
