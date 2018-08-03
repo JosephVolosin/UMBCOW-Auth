@@ -41,14 +41,15 @@ async def list_servers():
                 aliases=['setupserver', 'setup', 's'],
                 pass_context=True)
 async def setupServer(*args):
-	# Create the 'unverified' role
+	# Create the 'Unverified' role
 	server = args[0].message.author.server
-	try:
-		await client.create_role(server, name='Unverified')
-	except:
-		quit()
+	await client.create_role(server, name='Unverified')
 	await client.say('Created a Unverified role')
 
+	# Create the 'Verified' role
+	await client.create_role(server, name="Verified")
+	await client.say('Created a Verified role')
+	
 # setAllNotVerified() gives everyone the unverified role
 @client.command(name='setAllNotVerified',
 		description='setsall users in the server to a NotVerified role',
@@ -90,6 +91,8 @@ async def verify(*args):
 	else:
 		await client.say('verifying ID... please hold') #debugging line
 		res = authenticate.authenticateUser(message)
+		server = args[0].message.author.server
+		role = discord.utils.get(server.roles, name='Verified')
 
 		# Check result
 		if(res == 0):
@@ -98,10 +101,11 @@ async def verify(*args):
 		elif(res == 1):
 			print("Check succeeded.")
 			await client.say("Your UMBC status has been verified, welcome to the UMBC Overwatch Club")
+			await client.add_roles(args[0].message.author, role)
 		elif(res == 2):
 			print("Further contact needed.")
-			await clinet.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
-			
+			await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
+
 
 
 ''' Run '''

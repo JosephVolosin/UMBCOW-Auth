@@ -17,7 +17,8 @@ DIRECTORY_URL = "https://www.umbc.edu/search/directory/?search="
    2 = Further contact needed
 '''
 def authenticateUser(userMsg):
-    
+    userMsg = userMsg[userMsg.find(" ") + 1:]
+    print(userMsg)
     url = DIRECTORY_URL + userMsg
     resp = requests.get(url)
     # Checks that search was valid
@@ -28,7 +29,7 @@ def authenticateUser(userMsg):
                 str(resp.status_code))
     # Search results
     if (any(char.isdigit() for char in userMsg) and
-            ('1 result found' in response.text)):
+            ('1 result found' in resp.text)):
         return 1
     elif '@' in userMsg:
         return 2
