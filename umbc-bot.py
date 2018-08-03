@@ -105,7 +105,7 @@ async def verify(*args):
 			await client.add_roles(args[0].message.author, verified)
 			await client.remove_roles(args[0].message.author, unverified)
 			message = message[message.find(" ") + 1:]
-			whitelist.write(args[0].message.author + "," + message)
+			whitelist.write(str(args[0].message.author) + "," + message)
 		elif(res == 2):
 			print("Further contact needed.")
 			await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
