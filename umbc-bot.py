@@ -12,17 +12,6 @@ SERVER_ID = '455912302202322958'
 client = Bot(command_prefix=BOT_PREFIX)
 
 ''' Helper Methods '''
-<<<<<<< HEAD:discord.py
-def fetchToken():
-    # assuming that this is running in the same dir. as discord-keys.txt
-    try:
-        with open('discord-keys.txt') as f:
-            return f.readlines()[0]
-    except:
-        print("Error opening 'discord-keys.txt', FATAL.")
-        return 0
-
-=======
 # Fetch the bot's token
 def fetchToken():
 	# assuming that this is running in the same dir. as discord-keys.txt
@@ -44,7 +33,6 @@ async def list_servers():
             print(server.name)
         await asyncio.sleep(600)
 
->>>>>>> working:umbc-bot.py
 ''' Bot Methods '''
 # setupServer() creates the unverified role 
 @client.command(name='setupServer',
@@ -53,22 +41,10 @@ async def list_servers():
                 aliases=['setupserver', 'setup', 's'],
                 pass_context=True)
 async def setupServer(*args):
-<<<<<<< HEAD:discord.py
-    #TODO create the non-verified role
-    await client.create_role(SERVER_ID, name='NotVerified')
-    await client.say('Created a NotVerified role')
-    #TODO make the user hide all channels to the non-verified role
-    await client.say('Make sure to set the default non-verified role permissions.')
-    #TODO create the new channels needed
-    await client.create_channel(SERVER_ID, 'verification', *overwrites, type=discord.ChannelType.text)
-    await client.create_channel(SERVER_ID, 'verification-admins-only', *overwrites, type=discord.ChannelType.text)
-
-=======
 	# Create the 'Unverified' role
 	server = args[0].message.author.server
 	await client.create_role(server, name='Unverified')
 	await client.say('Created a Unverified role')
->>>>>>> working:umbc-bot.py
 
 	# Create the 'Verified' role
 	await client.create_role(server, name="Verified")
