@@ -16,3 +16,7 @@ def write(newAddition):
         f.write(newAddition + "\n")
         f.close()
     
+# clear() removes all lines from the file
+def clear():
+    f = open(FN, 'w')
+    f = close()
