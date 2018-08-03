@@ -1,7 +1,7 @@
 # discord.py houses the code for the Discord bot that will run on the server.
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
-import authenticate, discord, asyncio, aiohttp
+import authenticate, discord, asyncio, aiohttp, whitelist
 from discord.ext.commands import Bot
 
 '''
