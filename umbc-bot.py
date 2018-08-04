@@ -24,7 +24,7 @@ def fetchToken():
 		print("Error opening 'discord-keys.txt', FATAL.")
 		return 0
 
-# List all the servers bot is deployed to
+# TODO - unneeded
 async def list_servers():
     await client.wait_until_ready()
     while not client.is_closed:
@@ -64,13 +64,22 @@ async def setAllNotVerified(*args):
 		print("\t" + str(member) + " - set as 'Unverified'")
 		await client.add_roles(member, role)
 
-
+# on_ready() is the bot's startup
 @client.event
 async def on_ready():
     await client.change_presence(game=discord.Game(name='!verify for help'))
     print('Logged in as ' + client.user.name)
 
-#TODO: overwrite discord.on_member_join
+# website() sends the user that called it a link to the website
+@client.command(name="website",
+				description = "Sends the user a link to the e-sports website.",
+				aliases=['w'],
+				pass_context=True)
+async def website(*args):
+	await client.say('@' + str(args[0].message.author) + 
+					' http://umbcesports.com/overwatch/ fore more info!')
+
+# verify() verifies a user account with the umbc directory
 @client.command(name='verify',
 		description='checks to see if a user is a valid UMBC student',
 		breif='Verify yourself to allow access to this discord server',
