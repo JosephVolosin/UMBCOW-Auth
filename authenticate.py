@@ -10,18 +10,22 @@ DIRECTORY_URL = "https://www.umbc.edu/search/directory/?search="
 '''
  authenticateUser() attempts to authenticate a user
  Input:
-   userMsg = string, user's username or ID
+    userMsg     = string, user's username or ID
  Output:
-   0 = Fail
-   1 = Success
-   2 = Further contact needed
+    0 = Fail
+    1 = Success
+    2 = Further contact needed
 '''
 def authenticateUser(userMsg):
+
     userMsg = userMsg[userMsg.find(" ") + 1:]
     print(userMsg)
     url = DIRECTORY_URL + userMsg
     resp = requests.get(url)
-    # Checks that search was valid
+    # Check that UMBC website is available
+    if(checkAvailable() == False):
+        return 0
+     # Checks that search was valid
     try:
         resp.raise_for_status()
     except requests.exceptions.HTTPError:
@@ -34,7 +38,7 @@ def authenticateUser(userMsg):
     elif '@' in userMsg:
         return 2
     else:
-        return 0
+         return 0
 
 '''
  checkExistingAuth() checks the whitelist for the user's given username/ID
@@ -47,6 +51,9 @@ def authenticateUser(userMsg):
     2 = Discord account is already authenticated
 '''
 def checkExistingAuth(userName, userMsg):
+
+    userMsg = userMsg[userMsg.find(" ") + 1:]
+    print("TEST:" + userMsg)
     try:
         whitelist = open('whitelist.txt')
     except:
@@ -61,6 +68,19 @@ def checkExistingAuth(userName, userMsg):
             print("You have already used that e-mail/campus ID to authenticate \
                     an account. A request will be sent to admins for furthur \
                     review.")
-            return 2
+            return 0
     return 1
 
+'''
+ checkAvailable() checks if the UMBC website is available right now
+ Input:
+    None
+ Output:
+    True/False on if website is available
+'''
+def checkAvailable():
+
+    if(requests.get(DIRECTORY_URL).status_code == 200):
+        return True
+    else:
+        return False

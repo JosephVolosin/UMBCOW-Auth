@@ -1,3 +1,7 @@
+'''
+    whitelist.py acts as a simple way to interface with the whitelist.
+'''
+
 FN = "whitelist.txt"
 
 # write(newAddition) adds newAddition to the whitelist

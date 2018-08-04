@@ -99,25 +99,36 @@ async def verify(*args):
 	#!v <umbc argument>
 	else:
 		await client.say('verifying ID... please hold') #debugging line
-		res = authenticate.authenticateUser(message)
-		server = args[0].message.author.server
-		verified = discord.utils.get(server.roles, name='Verified')
-		unverified = discord.utils.get(server.roles, name='Unverified')
-
-		# Check result
+		# Check whitelist
+		res = authenticate.checkExistingAuth(str(args[0].message.author), message)
 		if(res == 0):
-			print("Check failed.")
-			await client.say('Sorry, either we could not verify your ID or something else unexpected went wrong. Please try again.\nverify_simple_search_check_error')
-		elif(res == 1):
-			print("Check succeeded.")
-			await client.say("Your UMBC status has been verified, welcome to the UMBC Overwatch Club")
-			await client.add_roles(args[0].message.author, verified)
-			await client.remove_roles(args[0].message.author, unverified)
-			message = message[message.find(" ") + 1:]
-			whitelist.write(str(args[0].message.author) + "," + message)
+			# Log to terminal TODO - create log file?
+			print("\t" + str(args[0].message.author) + ": sent an already used token.")
+			print("\t\t" + message)
+			await client.say("Sorry, your e-mail/ID has already been used to authenticate an account. Please contact an officer if this is wrong.")
 		elif(res == 2):
-			print("Further contact needed.")
-			await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
+			print("\t" + str(args[0].message.author) + ": attempted to authenticate an authenticated account.")
+			await client.say("It appears your current discord account is already authenticated.. If you are missing the role, please contact an officer.")
+		else:
+			# Send request
+			res = authenticate.authenticateUser(message)
+			server = args[0].message.author.server
+			verified = discord.utils.get(server.roles, name='Verified')
+			unverified = discord.utils.get(server.roles, name='Unverified')
+			# Check result
+			if(res == 0):
+				print("Check failed.")
+				await client.say('Sorry, either we could not verify your ID or something else unexpected went wrong. Please try again.\nverify_simple_search_check_error')
+			elif(res == 1):
+				print("Check succeeded.")
+				await client.say("Your UMBC status has been verified, welcome to the UMBC Overwatch Club")
+				await client.add_roles(args[0].message.author, verified)
+				await client.remove_roles(args[0].message.author, unverified)
+				message = message[message.find(" ") + 1:]
+				whitelist.write(str(args[0].message.author) + "," + message)
+			elif(res == 2):
+				print("Further contact needed.")
+				await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
 
 # TODO - Remove on deploy build, this is for debugging only
 @client.command(name="stop",
@@ -126,7 +137,6 @@ async def verify(*args):
 async def stop(*args):
 	await client.logout()
 	print("Ending client..")
-
 
 ''' Run '''
 if __name__ == '__main__':
