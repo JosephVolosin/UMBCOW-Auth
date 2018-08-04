@@ -119,6 +119,13 @@ async def verify(*args):
 			print("Further contact needed.")
 			await client.say("Sorry, but we are unable to verify certain emails, you will be contacted by a server admin to complete your verification")
 
+# TODO - Remove on deploy build, this is for debugging only
+@client.command(name="stop",
+				description="DEBUGGING: kills bot.",
+				pass_context=True)
+async def stop(*args):
+	await client.logout()
+	print("Ending client..")
 
 
 ''' Run '''
