@@ -3,13 +3,13 @@
 #   is hidden for security.
 import authenticate, discord, asyncio, aiohttp, whitelist
 from discord.ext.commands import Bot
-
 '''
 Constants
 '''
 BOT_PREFIX = ('?', '!')
 SERVER_ID = '455912302202322958'
 client = Bot(command_prefix=BOT_PREFIX)
+OFFICERS = ["JosephPV#1306"]
 
 ''' Helper Methods '''
 # Fetch the bot's token
@@ -32,6 +32,13 @@ async def list_servers():
             print(server.name)
         await asyncio.sleep(600)
 
+# checkOfficer(username) checks to see if username is an officer.
+def checkOfficer(username):
+
+	if username in OFFICERS:
+		return True
+	return False	
+
 ''' Bot Methods '''
 # setupServer() creates the unverified role 
 @client.command(name='setupServer',
@@ -40,13 +47,21 @@ async def list_servers():
                 aliases=['setupserver', 'setup', 's'],
                 pass_context=True)
 async def setupServer(*args):
-	# Create the 'Unverified' role
-	server = args[0].message.author.server
-	await client.create_role(server, name='Unverified')
-
-	# Create the 'Verified' role
-	await client.create_role(server, name="Verified")
 	
+	if(checkOfficer(str(args[0].message.author))):
+		# Create the 'Unverified' role
+		try:
+			server = args[0].message.author.server
+		except AttributeError:
+			await client.send_message(args[0].message.author, "You must run that command from a server.")
+			return
+		await client.create_role(server, name='Unverified')
+
+		# Create the 'Verified' role
+		await client.create_role(server, name="Verified")
+	else:
+		client.send_message(args[0].message.author, "You are not verified to use this command.")
+
 # setAllNotVerified() gives everyone the unverified role
 @client.command(name='setAllNotVerified',
 		description='setsall users in the server to a NotVerified role',
@@ -54,12 +69,20 @@ async def setupServer(*args):
 		aliases=['setANV','fukAllYall'],
 		pass_context=True)
 async def setAllNotVerified(*args):
-	server = args[0].message.author.server
-	role = discord.utils.get(server.roles, name='Unverified')
-	serverMembers = server.members
-	for member in serverMembers:
-		print("\t" + str(member) + " - set as 'Unverified'")
-		await client.add_roles(member, role)
+
+	if(checkOfficer(str(args[0].message.author))):
+		try:
+			server = args[0].message.author.server
+		except AttributeError:
+			await client.send_message(args[0].message.author, "You must run that command from a server.")
+			return
+		role = discord.utils.get(server.roles, name='Unverified')
+		serverMembers = server.members
+		for member in serverMembers:
+			print("\t" + str(member) + " - set as 'Unverified'")
+			await client.add_roles(member, role)
+	else:
+		client.send_message(args[0].message.author, "You are not verified to use this command.")
 
 # on_ready() is the bot's startup
 @client.event
@@ -163,8 +186,13 @@ async def on_message(*args):
 				description="DEBUGGING: kills bot.",
 				pass_context=True)
 async def stop(*args):
-	await client.logout()
-	print("Ending client..")
+	print("Attempting to stop client..")
+	if(checkOfficer(str(args[0].message.author))):
+		await client.logout()
+		print("Ending client..")
+	else:
+		await client.send_message(args[0].message.author, "Nice try, but only officers can run that command.")
+		print(str(args[0].message.author) + " attempted to shutdown the bot.")
 
 
 ''' Run '''
