@@ -43,11 +43,9 @@ async def setupServer(*args):
 	# Create the 'Unverified' role
 	server = args[0].message.author.server
 	await client.create_role(server, name='Unverified')
-	await client.say('Created a Unverified role')
 
 	# Create the 'Verified' role
 	await client.create_role(server, name="Verified")
-	await client.say('Created a Verified role')
 	
 # setAllNotVerified() gives everyone the unverified role
 @client.command(name='setAllNotVerified',
@@ -75,8 +73,8 @@ async def on_ready():
 				aliases=['w'],
 				pass_context=True)
 async def website(*args):
-	await client.say('@' + str(args[0].message.author) + 
-					' http://umbcesports.com/overwatch/ fore more info!')
+	await client.send_message(args[0].message.author, 
+					' http://umbcesports.com/overwatch/ for more info!')
 
 # verify() verifies a user account with the umbc directory
 @client.command(name='verify',
@@ -145,7 +143,7 @@ async def on_member_join(*args):
 	# Send user a PM greeting them and telling them to verify
 	print("Sending new user a message: " + str(args[0]))
 	print(type(args[0]))
-	client.send_message(args[0], "Welcome to the UMBC Overwatch server! We" +
+	await client.send_message(args[0], "Welcome to the UMBC Overwatch server! We " +
 									"require users to authenticate their " +
 									"Discord accounts by using their campus ID " +
 									"or their username (ex: USERNAME@umbc.edu)" +
