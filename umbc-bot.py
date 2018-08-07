@@ -163,9 +163,12 @@ async def verify(*args):
 @client.event
 async def on_member_join(*args):
 	
-	# Send user a PM greeting them and telling them to verify
+	# Send user a PM greeting them and telling them to verify and sets user as unverified
+	server = client.get_server("455912302202322958")
+	unverified = discord.utils.get(server.roles, name='Unverified')
 	print("Sending new user a message: " + str(args[0]))
 	print(type(args[0]))
+	await client.add_roles(args[0], unverified)
 	await client.send_message(args[0], "Welcome to the UMBC Overwatch server! We " +
 									"require users to authenticate their " +
 									"Discord accounts by using their campus ID " +
