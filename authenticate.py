@@ -35,8 +35,6 @@ def authenticateUser(userMsg):
     if (any(char.isdigit() for char in userMsg) and
             ('1 result found' in resp.text)):
         return 1
-    elif '@' in userMsg:
-        return 2
     else:
          return 0
 
@@ -53,7 +51,6 @@ def authenticateUser(userMsg):
 def checkExistingAuth(userName, userMsg):
 
     userMsg = userMsg[userMsg.find(" ") + 1:]
-    print("TEST:" + userMsg)
     try:
         whitelist = open('whitelist.txt')
     except:
