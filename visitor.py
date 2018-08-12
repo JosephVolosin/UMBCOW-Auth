@@ -5,7 +5,7 @@
 import datetime
 
 FN = "visitors.txt"
-TIME_PATTERN = "%Y%m%d %H:%M:S"
+TIME_PATTERN = "%Y%m%d %H:%M:%S"
 
 # removeOldVisitors() removes all visitors that have an age of more than a day
 def removeOldVisitors():
