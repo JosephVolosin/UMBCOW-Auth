@@ -205,6 +205,7 @@ async def stop(*args):
 async def stop(*args):
 	print("Checking in a visitor..")
 	# Check that the person calling this is a verified member
+	server = client.get_server("455912302202322958")
 	verified_role = discord.utils.get(server.roles, name='Verified')
 	member = args[0].message.author
 	if(verified_role not in member.roles):
@@ -220,7 +221,6 @@ async def stop(*args):
 	visitor_tag = msg_split[1]
 	visitor_mem = None
 	# Check that this member is a member of the server
-	server = client.get_server("455912302202322958")
 	for mem in server.members:
 		if(str(mem) == visitor_tag):
 			visitor_mem = mem
