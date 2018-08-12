@@ -14,8 +14,9 @@ def removeOldVisitors():
     now_time_stamp = datetime.datetime.strftime(now_time_stamp, TIME_PATTERN)
     f = open(FN, 'r')
     for l in f:
-        l_temp = l.split(",")[2]
-        cur_dt = datetime.datetime.strptime(l_temp.rstrip(), TIME_PATTERN)
+        l_temp = l.split(",")[2].rstrip()
+        print(l_temp)
+        cur_dt = datetime.datetime.strptime(l_temp, TIME_PATTERN)
         cur_dt += datetime.timedelta(hours=24)
         now_dt = datetime.datetime.strptime(now_time_stamp, TIME_PATTERN)
         if(cur_dt < now_dt):
