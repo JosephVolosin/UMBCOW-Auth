@@ -205,8 +205,9 @@ async def stop(*args):
 async def stop(*args):
 	print("Checking in a visitor..")
 	# Check that the person calling this is a verified member
+	verified_role = discord.utils.get(server.roles, name='Verified')
 	member = args[0].message.author
-	if("Verified" not in member.roles):
+	if(verified_role not in member.roles):
 		print("\t" + str(member) + " tried to add a visitor without being verified.")
 		await client.send_message(member, "You are not allowed to add visitors if you yourself, are a visitor.")
 		return 0
