@@ -11,11 +11,11 @@ TIME_PATTERN = "%Y%m%d %H:%M:%S"
 def removeOldVisitors():
 
     now_time_stamp = datetime.datetime.now()
-    now_time_stamp = datetime.datetime.strftime(now_time_stamp.rstrip(), TIME_PATTERN)
+    now_time_stamp = datetime.datetime.strftime(now_time_stamp, TIME_PATTERN)
     f = open(FN, 'r')
     for l in f:
         l_temp = l.split(",")[2]
-        cur_dt = datetime.datetime.strptime(l_temp, TIME_PATTERN)
+        cur_dt = datetime.datetime.strptime(l_temp.rstrip(), TIME_PATTERN)
         cur_dt += datetime.timedelta(hours=24)
         now_dt = datetime.datetime.strptime(now_time_stamp, TIME_PATTERN)
         if(cur_dt < now_dt):
