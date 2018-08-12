@@ -219,6 +219,8 @@ async def stop(*args):
 		await client.send_message(member, "Proper use of this command is '!visitor <discord-tag>'")
 		return 0
 	visitor_tag = msg_split[1]
+	print(msg_split)
+	print(visitor_tag)
 	visitor_mem = None
 	# Check that this member is a member of the server
 	for mem in server.members:
