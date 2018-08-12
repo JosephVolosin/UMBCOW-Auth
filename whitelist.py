@@ -23,4 +23,4 @@ def write(newAddition):
 # clear() removes all lines from the file
 def clear():
     f = open(FN, 'w')
-    f = close()
+    f.close()

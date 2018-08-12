@@ -47,7 +47,6 @@ def checkOfficer(username):
                 aliases=['setupserver', 'setup', 's'],
                 pass_context=True)
 async def setupServer(*args):
-	
 	if(checkOfficer(str(args[0].message.author))):
 		# Create the 'Unverified' role
 		try:
@@ -181,6 +180,8 @@ async def on_member_join(*args):
 @client.event
 async def on_message(*args):
 	message = args[0].content
+	# Check visitors for cleanup
+	visitor.removeOldVisitors()
 	await client.process_commands(args[0])
 
 
@@ -196,6 +197,44 @@ async def stop(*args):
 	else:
 		await client.send_message(args[0].message.author, "Nice try, but only officers can run that command.")
 		print(str(args[0].message.author) + " attempted to shutdown the bot.")
+
+# Message should be in the form of !visitor <discord-tag>
+@client.command(name="visitor",
+				description="Check-in a visitor to the server.",
+				pass_context=True)
+async def stop(*args):
+	print("Checking in a visitor..")
+	# Check that the person calling this is a verified member
+	member = args[0].message.author
+	if("Verified" not in member.roles):
+		print("\t" + str(member) + " tried to add a visitor without being verified.")
+		await client.send_message(member, "You are not allowed to add visitors if you yourself, are a visitor.")
+		return 0
+	# Check that there was a valid member passed to the bot
+	msg_split = args[0].message.split(" ")
+	if(len(msg_split) == 1):
+		print("\tVisitor called without any argument.")
+		await client.send_message(member, "Proper use of this command is '!visitor <discord-tag>'")
+		return 0
+	visitor_tag = msg_split[1]
+	visitor_mem = None
+	# Check that this member is a member of the server
+	server = client.get_server("455912302202322958")
+	for mem in server.members:
+		if(str(mem) == visitor_tag):
+			visitor_mem = mem
+	# Check that the user was found on the server
+	if(visitor_mem == None):
+		print("\t" + visitor_tag + " was not found on the server.")
+		await client.send_message(member, "Your visitor was not found on this server. Please make sure they've joined.")
+		return 0
+	# Give the visitor the visitor role, remove unverified, write to visitors
+	visitor_role = discord.utils.get(server.roles, name='Visitor')
+	unverified_role = discord.utils.get(server.roles, name='Unverified')
+	await client.add_roles(visitor_mem, visitor_role)
+	await client.remove_roles(visitor_mem, unverified_role)
+	visitor.write(str(member) + "," + str(visitor_mem))
+	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
 
 ''' Run '''
