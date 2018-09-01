@@ -209,7 +209,7 @@ async def stop(*args):
 @client.command(name="visitor",
 				description="Check-in a visitor to the server.",
 				pass_context=True)
-async def visitor(*args):
+async def visitor_add(*args):
 
 	print("Checking in a visitor..")
 	# Check that the person calling this is a verified member
