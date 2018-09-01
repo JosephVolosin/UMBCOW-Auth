@@ -186,7 +186,7 @@ async def on_message(*args):
 	# Check visitors for cleanup
 	usrs_remove = visitor.removeOldVisitors()
 	for usr in usrs_remove:
-		member = server.get_member(usr)
+		member = server.get_member_named(usr)
 		await client.remove_roles(member, visitor_role)
 		await client.add_roles(member, unverified_role)
 	await client.process_commands(args[0])
