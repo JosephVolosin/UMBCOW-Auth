@@ -10,18 +10,25 @@ TIME_PATTERN = "%Y%m%d %H:%M:%S"
 # removeOldVisitors() removes all visitors that have an age of more than a day
 def removeOldVisitors():
 
+    # Create a time of now, as string
     now_time_stamp = datetime.datetime.now()
     now_time_stamp = datetime.datetime.strftime(now_time_stamp, TIME_PATTERN)
+
+    # Compare current visitors checkin times with current time
     f = open(FN, 'r')
+    usrs_remove = []
     for l in f:
         l_temp = l.split(",")[2].rstrip()
+        cur_name = l.split(",")[0]
         cur_dt = datetime.datetime.strptime(l_temp, TIME_PATTERN)
-        cur_dt += datetime.timedelta(hours=24)
+        cur_dt += datetime.timedelta(minutes=1) # Change to hours=24
         now_dt = datetime.datetime.strptime(now_time_stamp, TIME_PATTERN)
         if(cur_dt < now_dt):
             remove(l)
+            usrs_remove.append(cur_name)
             print("\tRemoving line:")
             print("\t\t" + l)
+    return usrs_remove
 
 # write(newAddition) adds newAddition to the visitors file
 def write(newAddition):
@@ -59,6 +66,7 @@ def remove(removal):
 # True  = Visitor is checked in already
 # False = Visitor is not currently checked in
 def checkExistingVisitor(name):
+
     with open(FN, 'r') as f:
         lines = f.readlines()
         if(name in lines):

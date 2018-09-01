@@ -131,7 +131,7 @@ async def verify(*args):
 			else:
 				# Send request
 				res = authenticate.authenticateUser(message)
-				server = client.get_server("455912302202322958")
+				server = client.get_server(SERVER_ID)
 				verified = discord.utils.get(server.roles, name='Verified')
 				unverified = discord.utils.get(server.roles, name='Unverified')
 				# Check result
@@ -163,7 +163,7 @@ async def verify(*args):
 async def on_member_join(*args):
 	
 	# Send user a PM greeting them and telling them to verify and sets user as unverified
-	server = client.get_server("455912302202322958")
+	server = client.get_server(SERVER_ID)
 	unverified = discord.utils.get(server.roles, name='Unverified')
 	print("Sending new user a message: " + str(args[0]))
 	print(type(args[0]))
@@ -180,8 +180,15 @@ async def on_member_join(*args):
 @client.event
 async def on_message(*args):
 	message = args[0].content
+	server = client.get_server(SERVER_ID)
+	visitor_role = discord.utils.get(server.roles, name='Visitor')
+	unverified_role = discord.utils.get(server.roles, name='Unverified')
 	# Check visitors for cleanup
-	visitor.removeOldVisitors()
+	usrs_remove = visitor.removeOldVisitors()
+	for usr in usrs_remove:
+		member = server.get_member(usr)
+		await client.remove_roles(member, visitor_role)
+		await client.add_roles(member, unverified_role)
 	await client.process_commands(args[0])
 
 
@@ -205,7 +212,7 @@ async def stop(*args):
 async def stop(*args):
 	print("Checking in a visitor..")
 	# Check that the person calling this is a verified member
-	server = client.get_server("455912302202322958")
+	server = client.get_server(SERVER_ID)
 	verified_role = discord.utils.get(server.roles, name='Verified')
 	member = args[0].message.author
 	if(verified_role not in member.roles):
