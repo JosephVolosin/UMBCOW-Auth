@@ -19,7 +19,7 @@ def removeOldVisitors():
     usrs_remove = []
     for l in f:
         l_temp = l.split(",")[2].rstrip()
-        cur_name = l.split(",")[0]
+        cur_name = l.split(",")[1]
         cur_dt = datetime.datetime.strptime(l_temp, TIME_PATTERN)
         cur_dt += datetime.timedelta(minutes=1) # Change to hours=24
         now_dt = datetime.datetime.strptime(now_time_stamp, TIME_PATTERN)
@@ -28,7 +28,6 @@ def removeOldVisitors():
             usrs_remove.append(cur_name)
             print("\tRemoving line:")
             print("\t\t" + l)
-        print(usrs_remove[0])
     return usrs_remove
 
 # write(newAddition) adds newAddition to the visitors file
