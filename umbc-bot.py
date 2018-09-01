@@ -171,7 +171,7 @@ async def on_member_join(*args):
 	await client.send_message(args[0], "Welcome to the UMBC Overwatch server! We " +
 									"require users to authenticate their " +
 									"Discord accounts by using their campus ID " +
-									"or their username (ex: USERNAME@umbc.edu)" +
+									"or thseir username (ex: USERNAME@umbc.edu)" +
 									". Please send me a message in the format:" +
 									"\n`!v <CampusID>`\nor\n`!v <Username>`")
 	print("Message sent.")
@@ -209,12 +209,14 @@ async def stop(*args):
 @client.command(name="visitor",
 				description="Check-in a visitor to the server.",
 				pass_context=True)
-async def stop(*args):
+async def visitor(*args):
+
 	print("Checking in a visitor..")
 	# Check that the person calling this is a verified member
 	server = client.get_server(SERVER_ID)
 	verified_role = discord.utils.get(server.roles, name='Verified')
 	member = args[0].message.author
+	print(type(member))
 	if(verified_role not in member.roles):
 		print("\t" + str(member) + " tried to add a visitor without being verified.")
 		await client.send_message(member, "You are not allowed to add visitors if you yourself, are a visitor.")

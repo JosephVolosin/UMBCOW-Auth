@@ -60,7 +60,8 @@ def remove(removal):
         print("\tThe removal wasn't found in the visitors file.")
     clear()
     with open(FN, 'w') as f:
-        f.write(full_lines)
+        for l in full_lines:
+            f.write(l) + "\n"
 
 # checkExistingVisitor(name) checks if the visitor is already checked in with the visitors file
 # True  = Visitor is checked in already
