@@ -61,7 +61,7 @@ def remove(removal):
     clear()
     with open(FN, 'w') as f:
         for l in full_lines:
-            f.write(l) + "\n"
+            f.write(str(l)) + "\n"
 
 # checkExistingVisitor(name) checks if the visitor is already checked in with the visitors file
 # True  = Visitor is checked in already
