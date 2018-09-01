@@ -188,7 +188,7 @@ async def on_message(*args):
 	for usr in usrs_remove:
 		member = server.get_member_named(usr)
 		await client.remove_roles(member, visitor_role)
-		#await client.add_roles(member, unverified_role)
+		await client.add_roles(member, unverified_role)
 	await client.process_commands(args[0])
 
 
