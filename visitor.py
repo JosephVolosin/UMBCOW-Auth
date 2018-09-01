@@ -28,6 +28,7 @@ def removeOldVisitors():
             usrs_remove.append(cur_name)
             print("\tRemoving line:")
             print("\t\t" + l)
+        usrs_remove[0]
     return usrs_remove
 
 # write(newAddition) adds newAddition to the visitors file
