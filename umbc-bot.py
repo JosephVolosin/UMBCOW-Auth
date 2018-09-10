@@ -7,9 +7,9 @@ from discord.ext.commands import Bot
 Constants
 '''
 BOT_PREFIX = ('?', '!')
-SERVER_ID = '455912302202322958'
+SERVER_ID = '360868374244491264'
 client = Bot(command_prefix=BOT_PREFIX)
-OFFICERS = ["JosephPV#1306"]
+OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
 
 ''' Helper Methods '''
 # Fetch the bot's token
