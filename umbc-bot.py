@@ -191,8 +191,6 @@ async def on_message(*args):
 		await client.add_roles(member, unverified_role)
 	await client.process_commands(args[0])
 
-
-# TODO - Remove on deploy build, this is for debugging only
 @client.command(name="stop",
 				description="DEBUGGING: kills bot.",
 				pass_context=True)
@@ -246,7 +244,27 @@ async def visitor_add(*args):
 	visitor.write(str(member) + "," + str(visitor_mem))
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
+# Allows users to update their roles in Discord of Rank and Role automatically thru API
+@client.command(name="update",
+				description="Update Overwatch specific roles: rank and role.",
+				pass_context=True)
+async def update(*args):
 
+	message = args[0].message
+	member = message.author
+	rank_roles = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster"]
+	role_roles = ["Support", "DPS", "Tank"]
+	# Rank ranges are the tops of each bracket
+	rank_ranges = { "Bronze" : 1500, "Silver" : 2000, "Gold" : 2500, "Platinum" : 3000, "Diamond" : 3500, "Master" : 4000 }
+	# All possible characters, listed by their role, comma delimitted
+	role_chars = { "Support" : "Lucio,Ana,Zenyatta,Moira,Mercy,Brigitte",
+				   "DPS"	 : "Bastion,Doomfist,Genji,Hanzo,Junkrat,McCree,Mei,Pharah,Reaper,Soldier: 76,Sombra,Symettra,Torbjörn,Tracer,Widowmaker",
+				   "Tank"	 : "D.Va,Orisa,Reinhardt,Roadhog,Winston,Wrecking Ball,Zarya" }
+	
+	print(str(member) + " is updating roles..")
+	# Expected input is !update <BTAG>
+
+	
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
