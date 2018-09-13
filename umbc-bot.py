@@ -273,11 +273,10 @@ async def update(*args):
 				pass_context=True)
 async def iam(*args):
 
-	message = args[0].message
-	message_str = str(message.content)
-	member = message.author
+	message = args[0].message.content
+	member = args[0].message.author
 	server = client.get_server(SERVER_ID)
-	message_split = message_str.split("!iam")
+	message_split = message.split("!iam")
 	# Check if there was no arguments
 	if(len(message_split) == 1):
 		print("\tiam called without any argument.")
