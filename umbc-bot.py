@@ -10,6 +10,9 @@ BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
 client = Bot(command_prefix=BOT_PREFIX)
 OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
+IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
+			"Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
+			"Dallas Fuel", "LA Gladiators", "NY Excelsior", "Florida Mayhem", "Boston Uprising", "SF Shock", "Philadelphia Fusion"]
 
 ''' Helper Methods '''
 # Fetch the bot's token
@@ -191,8 +194,6 @@ async def on_message(*args):
 		await client.add_roles(member, unverified_role)
 	await client.process_commands(args[0])
 
-
-# TODO - Remove on deploy build, this is for debugging only
 @client.command(name="stop",
 				description="DEBUGGING: kills bot.",
 				pass_context=True)
@@ -246,7 +247,73 @@ async def visitor_add(*args):
 	visitor.write(str(member) + "," + str(visitor_mem))
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
+# Allows users to update their roles in Discord of Rank and Role automatically thru API
+@client.command(name="update",
+				description="Update Overwatch specific roles: rank and role.",
+				pass_context=True)
+async def update(*args):
 
+	message = args[0].message
+	member = message.author
+	rank_roles = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster"]
+	role_roles = ["Support", "DPS", "Tank"]
+	# Rank ranges are the tops of each bracket
+	rank_ranges = { "Bronze" : 1500, "Silver" : 2000, "Gold" : 2500, "Platinum" : 3000, "Diamond" : 3500, "Master" : 4000 }
+	# All possible characters, listed by their role, comma delimitted
+	role_chars = { "Support" : "Lucio,Ana,Zenyatta,Moira,Mercy,Brigitte",
+				   "DPS"	 : "Bastion,Doomfist,Genji,Hanzo,Junkrat,McCree,Mei,Pharah,Reaper,Soldier: 76,Sombra,Symettra,Torbjörn,Tracer,Widowmaker",
+				   "Tank"	 : "D.Va,Orisa,Reinhardt,Roadhog,Winston,Wrecking Ball,Zarya" }
+	
+	print(str(member) + " is updating roles..")
+	# Expected input is !update <BTAG>
+
+# Lets users set roles that are designated in IAMROLES
+@client.command(name="iam",
+				description="Allow the user to set any of the determined roles by themselves.",
+				pass_context=True)
+async def iam(*args):
+
+	message = args[0].message.content
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	message_split = message.split("!iam ")
+	# Check if there was no arguments
+	print(message_split)
+	if(len(message_split) == 1):
+		print("\tiam called without any argument.")
+		await client.send_message(member, "Proper use of this command is '!iam <role>. To see possible roles, use !iam help'")
+		return 0
+	# Help message
+	if("help" in message):
+		print("\tGiving !iam help message..")
+		# Creates string of all roles so that bot only has to send one message.
+		role_string = "\n"
+		for r in IAMROLES:
+			role_string += "\t" + r + "\n"
+		await client.send_message(member, "Possible roles are as follows: " + role_string)
+	# Attempt to give user the role
+	else:
+		role_usr_str = message_split[1]
+		# Check that the role was in the IAMROLES array
+		if(role_usr_str not in IAMROLES):
+			await client.send_message(member, "The role `" + role_usr_str + "` does not exist, or you don't have access to it.")
+			return 0
+		# Attempts to create role object, if it doesn't exist then catch the error
+		try:
+			role_usr_obj = discord.utils.get(server.roles, name=role_usr_str)
+		except AttributeError:
+			await client.send_message(member, "Role `" + role_usr_str + "` does not exist.")
+			return 0
+		for mem_role in member.roles:
+			if(role_usr_str == str(mem_role)):
+				await client.send_message(member, "You already have role `" + role_usr_str + "`.")
+				return 0
+		# Give user the role
+		new_role = discord.utils.get(server.roles, name=role_usr_str)
+		print("Giving user " + str(member) + " the role: " + role_usr_str)
+		await client.add_roles(member, new_role)
+		await client.send_message(member, "Role added!")
+	
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
