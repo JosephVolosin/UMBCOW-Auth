@@ -279,7 +279,7 @@ async def iam(*args):
 	message_split = message.split("!iam ")
 	# Check if there was no arguments
 	print(message_split)
-	if(message_split[1] == ""):
+	if(len(message_split) == 0):
 		print("\tiam called without any argument.")
 		await client.send_message(member, "Proper use of this command is '!iam <role>. To see possible roles, use !iam help'")
 		return 0
