@@ -294,13 +294,18 @@ async def iam(*args):
 	# Attempt to give user the role
 	else:
 		role_usr_str = message_split[1]
+		# Check that the role was in the IAMROLES array
+		if(role_usr_str not in IAMROLES):
+			await client.send_message(member, "The role `" + role_usr_str + "` does not exist, or you don't have access to it.")
+			return 0
+		# Attempts to create role object, if it doesn't exist then catch the error
 		try:
 			role_usr_obj = discord.utils.get(server.roles, name=role_usr_str)
 		except AttributeError:
 			await client.send_message(member, "Role `" + role_usr_str + "` does not exist.")
 			return 0
 		for mem_role in member.roles:
-			if(role_usr_str.lower() == str(mem_role).lower()):
+			if(role_usr_str == str(mem_role)):
 				await client.send_message(member, "You already have role `" + role_usr_str + "`.")
 				return 0
 		# Give user the role
