@@ -10,6 +10,9 @@ BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
 client = Bot(command_prefix=BOT_PREFIX)
 OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
+IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
+			"Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
+			"Dallas Fuel", "LA Gladiators", "NY Excelsior", "Florida Mayhem", "Boston Uprising", "SF Shock", "Philadelphia Fusion"]
 
 ''' Helper Methods '''
 # Fetch the bot's token
@@ -264,6 +267,45 @@ async def update(*args):
 	print(str(member) + " is updating roles..")
 	# Expected input is !update <BTAG>
 
+# Lets users set roles that are designated in IAMROLES
+@client.command(name="iam",
+				description="Allow the user to set any of the determined roles by themselves.",
+				pass_context=True)
+async def iam(*args):
+
+	message = args[0].message
+	member = message.author
+	server = client.get_server(SERVER_ID)
+	message_split = message.split("!iam")
+	# Check if there was no arguments
+	if(len(message_split) == 1):
+		print("\tiam called without any argument.")
+		await client.send_message(member, "Proper use of this command is '!iam <role>. To see possible roles, use !iam help'")
+		return 0
+	# Help message
+	if("help" in message):
+		print("\tGiving !iam help message..")
+		# Creates string of all roles so that bot only has to send one message.
+		role_string = ""
+		for r in IAMROLES:
+			role_string += "\t" + r + "\n"
+		await client.send_message(member, "Possible roles are as follows: " + role_string)
+	# Attempt to give user the role
+	else:
+		role_usr_str = message_split[1]
+		# Check that role is valid
+		if(role_usr_str not in server.roles):
+			await client.send_message(member, "That role does not exist, or you do not have access to it.")
+			return 0
+		# Check if user already has role
+		if(role_usr_str in member.roles):
+			await client.send_message(member, "You already have that role.")
+			return 0
+		# Give user the role
+		new_role = discord.utils.get(server.roles, name=role_usr_str)
+		print("Giving user " + str(member) + " the role: " + role_usr_str)
+		await client.add_roles(member, new_role)
+		await client.send_message(member, "Role added!")
 	
 ''' Run '''
 if __name__ == '__main__':
