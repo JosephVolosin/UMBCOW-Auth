@@ -294,16 +294,15 @@ async def iam(*args):
 	# Attempt to give user the role
 	else:
 		role_usr_str = message_split[1]
-		role_usr_obj = discord.utils.get(server.roles, name=role_usr_str)
-		print(role_usr_obj)
-		# Check that role is valid
-		#if(role_usr_str not in server.roles):
-		#	await client.send_message(member, "That role does not exist, or you do not have access to it.")
-		#	return 0
-		# Check if user already has role
-		if(role_usr_str in member.roles):
-			await client.send_message(member, "You already have that role.")
+		try:
+			role_usr_obj = discord.utils.get(server.roles, name=role_usr_str)
+		except AttributeError:
+			await client.send_message(member, "Role `" + role_usr_str + "` does not exist.")
 			return 0
+		for mem_role in member.roles:
+			if(role_usr_str.lower() == str(mem_role).lower()):
+				await client.send_message(member, "You already have role `" + role_usr_str + "`.")
+				return 0
 		# Give user the role
 		new_role = discord.utils.get(server.roles, name=role_usr_str)
 		print("Giving user " + str(member) + " the role: " + role_usr_str)
