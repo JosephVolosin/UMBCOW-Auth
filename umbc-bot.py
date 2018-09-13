@@ -278,6 +278,7 @@ async def iam(*args):
 	server = client.get_server(SERVER_ID)
 	message_split = message.split("!iam")
 	# Check if there was no arguments
+	print(message_split)
 	if(len(message_split) == 1):
 		print("\tiam called without any argument.")
 		await client.send_message(member, "Proper use of this command is '!iam <role>. To see possible roles, use !iam help'")
@@ -286,13 +287,14 @@ async def iam(*args):
 	if("help" in message):
 		print("\tGiving !iam help message..")
 		# Creates string of all roles so that bot only has to send one message.
-		role_string = ""
+		role_string = "\n"
 		for r in IAMROLES:
 			role_string += "\t" + r + "\n"
 		await client.send_message(member, "Possible roles are as follows: " + role_string)
 	# Attempt to give user the role
 	else:
 		role_usr_str = message_split[1]
+		role_usr_obj = discord.utils.get(server.roles, name=role_usr_str)
 		# Check that role is valid
 		if(role_usr_str not in server.roles):
 			await client.send_message(member, "That role does not exist, or you do not have access to it.")
