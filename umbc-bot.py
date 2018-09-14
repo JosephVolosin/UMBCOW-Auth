@@ -314,6 +314,34 @@ async def iam(*args):
 		await client.add_roles(member, new_role)
 		await client.send_message(member, "Role added!")
 	
+# Lets users remove roles they gave themselves
+@client.command(name="iamnot",
+				description="Allow the user to remove any role they have.",
+				pass_contex=True)
+async def iamnot(*args):
+
+	message = args[0].message.content
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	message_split = message.split("!iamnot ")
+	# Check for no arguments
+	if(len(message_split) == 1):
+		print("\tiamnot called without any argument.")
+		await client.send_message(member, "Proper use of this command is `!iamnot <role>`.")
+		return 0
+	# Attempt to remove role
+	role_usr_str = message_split[1]
+	for mem_role in member.roles:
+		if(role_usr_str == str(mem_role)):
+			role_usr_obj = discord.utils.get(server.roles, name=role_usr_str)
+			await client.remove_roles(member, role_usr_obj)
+			await client.send_message(member, "Role `" + role_usr_str + "` was removed.")
+			return 1
+	# If it reaches this point, the role could not be found or removed.
+	await client.send_message(member, "Error removing role `" + role_usr_str + "`. Please make sure you spelled it correctly.")
+	return 0
+
+	
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
