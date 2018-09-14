@@ -317,7 +317,7 @@ async def iam(*args):
 # Lets users remove roles they gave themselves
 @client.command(name="iamnot",
 				description="Allow the user to remove any role they have.",
-				pass_contex=True)
+				pass_context=True)
 async def iamnot(*args):
 
 	message = args[0].message.content
