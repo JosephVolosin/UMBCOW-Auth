@@ -251,6 +251,7 @@ async def visitor_add(*args):
 	await asyncio.sleep(2) # Arbitrary sleep for making sure it actually gives role 
 	await client.remove_roles(visitor_mem, unverified_role)
 	visitor.write(str(member) + "," + str(visitor_mem))
+	await client.send_message(member, "You've been checked in as a visitor for the next 24 hours.")
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
 # Allows users to update their roles in Discord of Rank and Role automatically thru API
