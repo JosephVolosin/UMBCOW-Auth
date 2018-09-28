@@ -1,7 +1,7 @@
 # discord.py houses the code for the Discord bot that will run on the server.
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
-import authenticate, discord, asyncio, aiohttp, whitelist, visitor
+import authenticate, discord, asyncio, aiohttp, whitelist, visitor, overwatch.stats
 from discord.ext.commands import Bot
 '''
 Constants
@@ -9,6 +9,7 @@ Constants
 BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
 client = Bot(command_prefix=BOT_PREFIX)
+CONSOLES = ["PC", "XBOX", "PS4"]
 OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
 IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
 			"Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
@@ -249,7 +250,7 @@ async def visitor_add(*args):
 
 # Allows users to update their roles in Discord of Rank and Role automatically thru API
 @client.command(name="update",
-				description="Update Overwatch specific roles: rank and role.",
+				description="Update Overwatch specific roles: rank and role. Proper use is !update Battletag#1234",
 				pass_context=True)
 async def update(*args):
 
@@ -265,7 +266,19 @@ async def update(*args):
 				   "Tank"	 : "D.Va,Orisa,Reinhardt,Roadhog,Winston,Wrecking Ball,Zarya" }
 	
 	print(str(member) + " is updating roles..")
+	# Try to pull battletag
+	tmp_split = message.content.split(" ")
+	btag = ""
+	console = ""
+	try:
+		console = tmp_split[2]
+		if((console in CONSOLES) == False):
+			await client.send_message(member, "Didn't receive a proper console. Please use PC|XBOX|PS4.")
+		btag = tmp_split[3]
+	except:
+		await client.send_message(member, "Proper use is !update PC|XBOX|PS4 Battletag#1234")
 	# Expected input is !update <BTAG>
+	stats = overwatch.stats.query('pc', btag)
 
 # Lets users set roles that are designated in IAMROLES
 @client.command(name="iam",
