@@ -1,7 +1,7 @@
 # discord.py houses the code for the Discord bot that will run on the server.
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
-import authenticate, discord, asyncio, aiohttp, whitelist, visitor
+import authenticate, discord, asyncio, aiohttp, whitelist, visitor, bracket
 from discord.ext.commands import Bot
 '''
 Constants
@@ -9,6 +9,8 @@ Constants
 BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
 client = Bot(command_prefix=BOT_PREFIX)
+TWITCH = "https://www.twitch.tv/UMBCOverwatch"
+CONSOLES = ["PC", "XBOX", "PS4"]
 OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
 IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
 			"Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
@@ -255,8 +257,10 @@ async def visitor_add(*args):
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
 # Allows users to update their roles in Discord of Rank and Role automatically thru API
+# TODO - Implement this
+'''
 @client.command(name="update",
-				description="Update Overwatch specific roles: rank and role.",
+				description="Update Overwatch specific roles: rank and role. Proper use is !update Battletag#1234",
 				pass_context=True)
 async def update(*args):
 
@@ -272,7 +276,20 @@ async def update(*args):
 				   "Tank"	 : "D.Va,Orisa,Reinhardt,Roadhog,Winston,Wrecking Ball,Zarya" }
 	
 	print(str(member) + " is updating roles..")
+	# Try to pull battletag
+	tmp_split = message.content.split(" ")
+	btag = ""
+	console = ""
+	try:
+		console = tmp_split[2]
+		if((console in CONSOLES) == False):
+			await client.send_message(member, "Didn't receive a proper console. Please use PC|XBOX|PS4.")
+		btag = tmp_split[3]
+	except:
+		await client.send_message(member, "Proper use is !update PC|XBOX|PS4 Battletag#1234")
 	# Expected input is !update <BTAG>
+	stats = overwatch.stats.query('pc', btag)
+'''
 
 # Lets users set roles that are designated in IAMROLES
 @client.command(name="iam",
@@ -348,7 +365,39 @@ async def iamnot(*args):
 	await client.send_message(member, "Error removing role `" + role_usr_str + "`. Please make sure you spelled it correctly.")
 	return 0
 
+# Links the UMBC Overwatch stream to the user who just asked for it
+@client.command(name="stream",
+				description="Send the user a link to the Twitch stream.",
+				pass_context=True)
+async def stream(*args):
+
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	await client.send_message(member, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
 	
+# Links the latest tournament bracket, if one doesn't exist, let officers set URL
+# TODO - Proper storage for this
+# TODO - Save upload date for latest bracket
+@client.command(name="bracket",
+				description="Send user bracket, or, update link.",
+				pass_context=True)
+async def bracket(*args):
+
+	member = args[0].message.author
+	privilege = (str(member) in OFFICERS) # Check if the member is an officer
+	message = args[0].message.content
+	message_split = message.split(" ")
+	# Check if normal user gave arguments
+	if(len(message_split) != 1):
+		if(len(message_split) > 2):
+			await client.send_message(member, "That was too many arguments.")
+		elif(privilege == False):
+			await client.send_message(member, "Proper usage is !bracket to get a link to the most recent bracket.")
+		else:
+			bracket.update(message_split[1])
+	else:
+		await client.send_message(member, bracket.output)
+
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
