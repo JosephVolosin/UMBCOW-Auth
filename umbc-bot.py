@@ -1,7 +1,7 @@
 # discord.py houses the code for the Discord bot that will run on the server.
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
-import authenticate, discord, asyncio, aiohttp, whitelist, visitor, bracket
+import authenticate, discord, asyncio, aiohttp, whitelist, visitor, tourney_bracket
 from discord.ext.commands import Bot
 '''
 Constants
@@ -384,9 +384,9 @@ async def bracket(*args):
 		elif(privilege == False):
 			await client.send_message(member, "Proper usage is !bracket to get a link to the most recent bracket.")
 		else:
-			bracket.update(message_split[1])
+			tourney_bracket.update(message_split[1])
 	else:
-		return_message = bracket.output()
+		return_message = tourney_bracket.output()
 		await client.send_message(member, return_message)
 
 ''' Run '''
