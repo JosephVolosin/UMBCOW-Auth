@@ -435,6 +435,7 @@ async def join(*args):
 		await client.send_message(member, "Sorry, I'm already in a voice channel!")
 
 # Bot leaves your current voice channel
+# TODO - This doesn't work
 @client.command(name="leave",
 				description="Leaves the current voice channel.",
 				pass_context=True)
