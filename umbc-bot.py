@@ -9,6 +9,7 @@ Constants
 BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
 client = Bot(command_prefix=BOT_PREFIX)
+TWITCH = "https://www.twitch.tv/UMBCOverwatch"
 CONSOLES = ["PC", "XBOX", "PS4"]
 OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
 IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
@@ -354,6 +355,15 @@ async def iamnot(*args):
 	await client.send_message(member, "Error removing role `" + role_usr_str + "`. Please make sure you spelled it correctly.")
 	return 0
 
+# Links the UMBC Overwatch stream to the user who just asked for it
+@client.command(name="stream",
+				description="Send the user a link to the Twitch stream.",
+				pass_context=True)
+async def stream(*args):
+
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	await client.send_message(member, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
 	
 ''' Run '''
 if __name__ == '__main__':
