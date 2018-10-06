@@ -385,7 +385,6 @@ async def bracket(*args):
 	message = args[0].message.content
 	message_split = message.split(" ")
 	# Check if normal user gave arguments
-	'''
 	if(len(message_split) != 1):
 		if(len(message_split) > 2):
 			await client.send_message(member, "That was too many arguments.")
@@ -394,9 +393,8 @@ async def bracket(*args):
 		else:
 			bracket.update(message_split[1])
 	else:
-		await client.send_message(member, bracket.output())
-	'''
-	await client.send_message(member, "testing")
+		return_message = bracket.output()
+		await client.send_message(member, return_message)
 
 ''' Run '''
 if __name__ == '__main__':
