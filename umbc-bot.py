@@ -250,6 +250,8 @@ async def visitor_add(*args):
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
 # Allows users to update their roles in Discord of Rank and Role automatically thru API
+# TODO - Implement this
+'''
 @client.command(name="update",
 				description="Update Overwatch specific roles: rank and role. Proper use is !update Battletag#1234",
 				pass_context=True)
@@ -280,6 +282,7 @@ async def update(*args):
 		await client.send_message(member, "Proper use is !update PC|XBOX|PS4 Battletag#1234")
 	# Expected input is !update <BTAG>
 	stats = overwatch.stats.query('pc', btag)
+'''
 
 # Lets users set roles that are designated in IAMROLES
 @client.command(name="iam",
