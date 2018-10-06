@@ -36,18 +36,9 @@ def write(newAddition):
     cur_time_stamp = datetime.datetime.now()
     cur_time_stamp = datetime.datetime.strftime(cur_time_stamp, TIME_PATTERN)
 
-    # Capture all old lines to be re-written
-    old_lines = ''
-    with open(FN, 'r') as f:
-        for l in f:
-            old_lines += l + "\n"
-        f.close()
-
-    # Write all lines
-    with open(FN, 'w') as f:
-        f.write(old_lines)
+    # Write newAddition
+    with open(FN, 'a') as f:
         f.write(newAddition + "," + cur_time_stamp + "\n")
-        f.close()
 
 # remove(removal) removes whatever removal is
 def remove(removal):

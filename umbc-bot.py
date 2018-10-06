@@ -186,12 +186,17 @@ async def on_message(*args):
 	server = client.get_server(SERVER_ID)
 	visitor_role	= discord.utils.get(server.roles, name='Visitor')
 	unverified_role	= discord.utils.get(server.roles, name='Unverified')
-	# Check visitors for cleanup
+	# TODO - Check visitors for cleanup
+	
 	usrs_remove = visitor.removeOldVisitors()
 	for usr in usrs_remove:
-		member = server.get_member_named(usr)
-		await client.remove_roles(member, visitor_role)
-		await client.add_roles(member, unverified_role)
+		try:
+			member = server.get_member_named(usr)
+			await client.remove_roles(member, visitor_role)
+			await asyncio.sleep(3)
+			await client.add_roles(member, unverified_role)
+		except:
+			print("Attempted to remove visitor status from, " + usr + ", but they were not found.")
 	await client.process_commands(args[0])
 
 @client.command(name="stop",
@@ -243,8 +248,10 @@ async def visitor_add(*args):
 	visitor_role = discord.utils.get(server.roles, name='Visitor')
 	unverified_role = discord.utils.get(server.roles, name='Unverified')
 	await client.add_roles(visitor_mem, visitor_role)
+	await asyncio.sleep(2) # Arbitrary sleep for making sure it actually gives role 
 	await client.remove_roles(visitor_mem, unverified_role)
 	visitor.write(str(member) + "," + str(visitor_mem))
+	await client.send_message(member, "You've been checked in as a visitor for the next 24 hours.")
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
 # Allows users to update their roles in Discord of Rank and Role automatically thru API
