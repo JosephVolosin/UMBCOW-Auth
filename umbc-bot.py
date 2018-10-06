@@ -410,6 +410,79 @@ async def bracket(*args):
 		else:
 			await client.send_message(bot_channel, return_message)
 
+# Bot joins your current voice channel
+@client.command(name="join",
+				description="Joins the user's voice channel.",
+				pass_context=True)
+async def join(*args):
+
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	# Check for officer privilege
+	if(str(member) not in OFFICERS):
+		await client.send_message(member, "Sorry, this is an officer only command.")
+		return
+	# Check that the user is connected to voice
+	member_vc = member.voice_channel
+	if(member_vc == None):
+		await client.send_message(member, "You don't appear to be in a voice channel.")
+		return
+	# Check if the bot is already in a voice channel
+	if(client.is_voice_connected(server) == False):
+		await client.send_message(member, "Joining voice chat..")
+		await client.join_voice_channel(member_vc)
+	else:
+		await client.send_message(member, "Sorry, I'm already in a voice channel!")
+
+# Bot leaves your current voice channel
+@client.command(name="leave",
+				description="Leaves the current voice channel.",
+				pass_context=True)
+async def leave(*args):
+
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	# check for officer privilege
+	if(str(member) not in OFFICERS):
+		await client.send_message(member, "Sorry, this is an officer only command.")
+		return
+	# Check that the bot is connected to voice
+	if(client.is_voice_connected(server) == True):
+		for vc in client.voice_clients:
+			if(vc == server):
+				await client.send_message(member, "Leaving voice chat..")
+				return await vc.disconnect()
+	else:
+		await client.send_message(member, "Sorry, I'm not in a voice channel!")
+
+'''
+TODO - Implement this
+# Mutes all users in the current voice channel
+@client.command(name="muteall",
+				description="Mute all users in current voice channel.",
+				pass_context=True)
+async def muteall(*args):
+
+	member = args[0].message.author
+	# check for officer privilege
+	if(str(member) not in OFFICERS):
+		await client.send_message(member, "Sorry, this is an officer only command.")
+		return
+
+# Unmutes all users in the current voice channel
+@client.command(name="unmuteall",
+				description="Unmutes all useres in the current voice channel",
+				pass_context=True)
+async def unmuteall(*args):
+
+	member = args[0].message.author
+	# check for officer privilege
+	if(str(member) not in OFFICERS):
+		await client.send_message(member, "Sorry, this is an officer only command.")
+		return
+'''
+
+
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
