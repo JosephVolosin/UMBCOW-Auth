@@ -1,7 +1,7 @@
 # discord.py houses the code for the Discord bot that will run on the server.
 # This file uses discord-keys.txt which houses the Discord API keys, this file
 #   is hidden for security.
-import authenticate, discord, asyncio, aiohttp, whitelist, visitor, overwatch.stats
+import authenticate, discord, asyncio, aiohttp, whitelist, visitor, overwatch.stats, bracket
 from discord.ext.commands import Bot
 '''
 Constants
@@ -365,6 +365,28 @@ async def stream(*args):
 	server = client.get_server(SERVER_ID)
 	await client.send_message(member, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
 	
+# Links the latest tournament bracket, if one doesn't exist, let officers set URL
+# TODO - Proper storage for this
+# TODO - Save upload date for latest bracket
+@client.command(name="bracket",
+				description="Send user bracket, or, update link.",
+				pass_context=True)
+async def bracket(*args):
+
+	member = args[0].message.author
+	privilege = (str(member) in OFFICERS) # Check if the member is an officer
+	message = args[0].message.content
+	message_split = message.split(" ")
+	# Check if normal user gave arguments
+	if(len(message_split) != 1):
+		if(privilege == False):
+			await client.send_message(member, "Proper usage is !bracket to get a link to the most recent bracket.")
+		else:
+			# TODO - Let officer update link
+	else:
+		# TODO - Create bracket class
+		await client.send_message(member, Bracket.output)
+
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
