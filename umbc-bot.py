@@ -8,6 +8,7 @@ Constants
 '''
 BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
+BOT_CHANNEL_ID = '360880051690143755'
 client = Bot(command_prefix=BOT_PREFIX)
 TWITCH = "https://www.twitch.tv/UMBCOverwatch"
 CONSOLES = ["PC", "XBOX", "PS4"]
@@ -372,7 +373,9 @@ async def iamnot(*args):
 async def stream(*args):
 
 	member = args[0].message.author
-	await client.send_message(member, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
+	server = client.get_server(SERVER_ID)
+	bot_channel = server.get_channel(BOT_CHANNEL_ID)
+	await client.send_message(bot_channel, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
 	
 # Links the latest tournament bracket, if one doesn't exist, let officers set URL
 @client.command(name="bracket",
@@ -384,12 +387,15 @@ async def bracket(*args):
 	privilege = (str(member) in OFFICERS) # Check if the member is an officer
 	message = args[0].message.content
 	message_split = message.split(" ")
+	server = client.get_server(SERVER_ID)
+	bot_channel = server.get_channel(BOT_CHANNEL_ID)
+
 	# Check if normal user gave arguments
 	if(len(message_split) != 1):
 		if(len(message_split) > 2):
-			await client.send_message(member, "That was too many arguments.")
+			await client.send_message(bot_channel, "That was too many arguments.")
 		elif(privilege == False):
-			await client.send_message(member, "Proper usage is !bracket to get a link to the most recent bracket.")
+			await client.send_message(bot_channel, "Proper usage is !bracket to get a link to the most recent bracket.")
 		else:
 			try:
 				tourney_bracket.update(message_split[1])
@@ -400,9 +406,9 @@ async def bracket(*args):
 	else:
 		return_message = tourney_bracket.output()
 		if(return_message == ""):
-			await client.send_message(member, "The output was empty! Please report this to an officer.")
+			await client.send_message(bot_channel, "The output was empty! Please report this to an officer.")
 		else:
-			await client.send_message(member, return_message)
+			await client.send_message(bot_channel, return_message)
 
 ''' Run '''
 if __name__ == '__main__':
