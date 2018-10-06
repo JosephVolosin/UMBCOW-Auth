@@ -376,8 +376,6 @@ async def stream(*args):
 	await client.send_message(member, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
 	
 # Links the latest tournament bracket, if one doesn't exist, let officers set URL
-# TODO - Proper storage for this
-# TODO - Save upload date for latest bracket
 @client.command(name="bracket",
 				description="Send user bracket, or, update link.",
 				pass_context=True)
