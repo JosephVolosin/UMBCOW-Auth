@@ -396,7 +396,7 @@ async def bracket(*args):
 		else:
 			bracket.update(message_split[1])
 	else:
-		await client.send_message(member, bracket.output)
+		await client.send_message(member, bracket.output())
 
 ''' Run '''
 if __name__ == '__main__':
