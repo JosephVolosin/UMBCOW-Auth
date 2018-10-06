@@ -384,10 +384,18 @@ async def bracket(*args):
 		elif(privilege == False):
 			await client.send_message(member, "Proper usage is !bracket to get a link to the most recent bracket.")
 		else:
-			tourney_bracket.update(message_split[1])
+			try:
+				tourney_bracket.update(message_split[1])
+			except:
+				await client.send_message(member, "Error updating bracket.")
+			else:
+				await client.send_message(member, "Bracket updated successfully!")
 	else:
 		return_message = tourney_bracket.output()
-		await client.send_message(member, return_message)
+		if(return_message == ""):
+			await client.send_message(member, "The output was empty! Please report this to an officer.")
+		else:
+			await client.send_message(member, return_message)
 
 ''' Run '''
 if __name__ == '__main__':
