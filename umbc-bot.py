@@ -196,7 +196,6 @@ async def on_message(*args):
 		try:
 			member = server.get_member_named(usr)
 			await client.remove_roles(member, visitor_role)
-			await asyncio.sleep(3)
 			await client.add_roles(member, unverified_role)
 		except:
 			print("Attempted to remove visitor status from, " + usr + ", but they were not found.")
@@ -251,7 +250,6 @@ async def visitor_add(*args):
 	visitor_role = discord.utils.get(server.roles, name='Visitor')
 	unverified_role = discord.utils.get(server.roles, name='Unverified')
 	await client.add_roles(visitor_mem, visitor_role)
-	await asyncio.sleep(2) # Arbitrary sleep for making sure it actually gives role 
 	await client.remove_roles(visitor_mem, unverified_role)
 	visitor.write(str(member) + "," + str(visitor_mem))
 	await client.send_message(member, "You've been checked in as a visitor for the next 24 hours.")
