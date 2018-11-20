@@ -9,6 +9,7 @@ Constants
 BOT_PREFIX = ('?', '!')
 SERVER_ID = '360868374244491264'
 BOT_CHANNEL_ID = '360880051690143755'
+REPORT_CHANNEL_ID = '514561663870042123'
 client = Bot(command_prefix=BOT_PREFIX)
 TWITCH = "https://www.twitch.tv/UMBCOverwatch"
 CONSOLES = ["PC", "XBOX", "PS4"]
@@ -482,6 +483,23 @@ async def unmuteall(*args):
 		await client.send_message(member, "Sorry, this is an officer only command.")
 		return
 '''
+
+# Reports a player that will be shown in the #reports channel
+# Proper input: JosephPV#1111 This is the report message
+@client.command(name="report",
+				description="Reports a member",
+				pass_context=True)
+async def report(*args):
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	message = args[0].message.content
+	report_channel = server.get_channel(REPORT_CHANNEL_ID)
+	# Split on a space because we hope the user entered properly
+	reported_usr = message.split([:message.find(" ")])
+	reported_msg = message.split([message.find(" "):])
+	print_str = "User, " + reported_usr + ", reported by " + str(member) + "\n\t" + reported_msg
+	await client.send_message(report_channel, print_str)
+
 
 
 ''' Run '''
