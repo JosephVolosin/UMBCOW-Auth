@@ -261,41 +261,6 @@ async def visitor_add(*args):
 	await client.send_message(visitor_mem, "You've been checked in as a visitor for the next 24 hours.")
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
-# Allows users to update their roles in Discord of Rank and Role automatically thru API
-# TODO - Implement this
-'''
-@client.command(name="update",
-				description="Update Overwatch specific roles: rank and role. Proper use is !update Battletag#1234",
-				pass_context=True)
-async def update(*args):
-
-	message = args[0].message
-	member = message.author
-	rank_roles = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster"]
-	role_roles = ["Support", "DPS", "Tank"]
-	# Rank ranges are the tops of each bracket
-	rank_ranges = { "Bronze" : 1500, "Silver" : 2000, "Gold" : 2500, "Platinum" : 3000, "Diamond" : 3500, "Master" : 4000 }
-	# All possible characters, listed by their role, comma delimitted
-	role_chars = { "Support" : "Lucio,Ana,Zenyatta,Moira,Mercy,Brigitte",
-				   "DPS"	 : "Bastion,Doomfist,Genji,Hanzo,Junkrat,McCree,Mei,Pharah,Reaper,Soldier: 76,Sombra,Symettra,Torbjörn,Tracer,Widowmaker",
-				   "Tank"	 : "D.Va,Orisa,Reinhardt,Roadhog,Winston,Wrecking Ball,Zarya" }
-	
-	print(str(member) + " is updating roles..")
-	# Try to pull battletag
-	tmp_split = message.content.split(" ")
-	btag = ""
-	console = ""
-	try:
-		console = tmp_split[2]
-		if((console in CONSOLES) == False):
-			await client.send_message(member, "Didn't receive a proper console. Please use PC|XBOX|PS4.")
-		btag = tmp_split[3]
-	except:
-		await client.send_message(member, "Proper use is !update PC|XBOX|PS4 Battletag#1234")
-	# Expected input is !update <BTAG>
-	stats = overwatch.stats.query('pc', btag)
-'''
-
 # Lets users set roles that are designated in IAMROLES
 @client.command(name="iam",
 				description="Allow the user to set any of the determined roles by themselves.",
