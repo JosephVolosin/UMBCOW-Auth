@@ -229,33 +229,36 @@ async def visitor_add(*args):
 	print(type(member))
 	if(verified_role not in member.roles):
 		print("\t" + str(member) + " tried to add a visitor without being verified.")
-		await client.send_message(member, "You are not allowed to add visitors if you yourself, are a visitor.")
+		await client.send_message(member, "You are not allowed to add visitors if you're unverified. Use !v <Student ID> to verify.")
 		return 0
+	
 	# Check that there was a valid member passed to the bot
 	msg_split = args[0].message.content.split(" ")
-	if(len(msg_split) == 1):
-		print("\tVisitor called without any argument.")
+	if(len(msg_split) != 2):
+		print("\tVisitor called with improper arguments.")
 		await client.send_message(member, "Proper use of this command is '!visitor <discord-tag>'")
 		return 0
 	visitor_tag = msg_split[1]
 	visitor_mem = None
+	
 	# Check that this member is a member of the server
 	for mem in server.members:
 		if(str(mem) == visitor_tag):
 			visitor_mem = mem
+	
 	# Check that the user was found on the server
 	if(visitor_mem == None):
 		print("\t" + visitor_tag + " was not found on the server.")
 		await client.send_message(member, "Your visitor was not found on this server. Please make sure they've joined.")
 		return 0
+	
 	# Give the visitor the visitor role, remove unverified, write to visitors
 	visitor_role = discord.utils.get(server.roles, name='Visitor')
 	unverified_role = discord.utils.get(server.roles, name='Unverified')
 	await client.add_roles(visitor_mem, visitor_role)
-	await asyncio.sleep(2) # Arbitrary sleep for making sure it actually gives role 
 	await client.remove_roles(visitor_mem, unverified_role)
 	visitor.write(str(member) + "," + str(visitor_mem))
-	await client.send_message(member, "You've been checked in as a visitor for the next 24 hours.")
+	await client.send_message(visitor_mem, "You've been checked in as a visitor for the next 24 hours.")
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
 
 # Allows users to update their roles in Discord of Rank and Role automatically thru API
