@@ -500,8 +500,6 @@ async def report(*args):
 	print_str = "User, " + reported_usr + ", reported by " + str(member) + "\n\t" + reported_msg
 	await client.send_message(report_channel, print_str)
 
-
-
 ''' Run '''
 if __name__ == '__main__':
 	token = fetchToken()
