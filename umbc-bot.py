@@ -414,8 +414,10 @@ async def leave(*args):
 		return
 	# Check that the bot is connected to voice
 	if(client.is_voice_connected(server)):
-		await client.send_message(member, "Leaving voice chat..")
-		return await client.disconnect()
+		for c in client.voice_clients:
+			if c.server == server:
+				await client.send_message(member, "Leaving voice chat..")
+				return await client.disconnect()
 	else:
 		await client.send_message(member, "Sorry, I'm not in a voice channel!")
 
