@@ -185,7 +185,6 @@ async def on_member_join(*args):
 # on_message() will check the bot's PMs for command messages.
 @client.event
 async def on_message(*args):
-	message = args[0].content
 	server = client.get_server(SERVER_ID)
 	visitor_role	= discord.utils.get(server.roles, name='Visitor')
 	unverified_role	= discord.utils.get(server.roles, name='Unverified')
@@ -200,8 +199,9 @@ async def on_message(*args):
 			print("Attempted to remove visitor status from, " + usr + ", but they were not found.")
 	await client.process_commands(args[0])
 
+# Kills the bot remotely, only for officers
 @client.command(name="stop",
-				description="DEBUGGING: kills bot.",
+				description="Kills bot.",
 				pass_context=True)
 async def stop(*args):
 	print("Attempting to stop client..")
@@ -338,7 +338,6 @@ async def iamnot(*args):
 				pass_context=True)
 async def stream(*args):
 
-	member = args[0].message.author
 	server = client.get_server(SERVER_ID)
 	bot_channel = server.get_channel(BOT_CHANNEL_ID)
 	await client.send_message(bot_channel, "The UMBC Overwatch twitch stream is located at %s, please follow to support us!" % TWITCH)
@@ -428,7 +427,6 @@ async def leave(*args):
 async def muteall(*args):
 
 	member = args[0].message.author
-	server = client.get_server(SERVER_ID)
 	# Check for officer privilege
 	if(str(member) not in OFFICERS):
 		await client.send_message(member, "Sorry, this is an officer only command.")
@@ -449,7 +447,6 @@ async def muteall(*args):
 async def unmuteall(*args):
 
 	member = args[0].message.author
-	server = client.get_server(SERVER_ID)
 	# Check for officer privilege
 	if(str(member) not in OFFICERS):
 		await client.send_message(member, "Sorry, this is an officer only command.")
