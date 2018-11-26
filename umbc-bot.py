@@ -460,8 +460,8 @@ async def report(*args):
 	message = args[0].message.content
 	report_channel = server.get_channel(REPORT_CHANNEL_ID)
 	# Split on a space because we hope the user entered properly
-	reported_usr = message.split([:message.find(" ")])
-	reported_msg = message.split([message.find(" "):])
+	reported_usr = message[:message.find(" ")]
+	reported_msg = message[message.find(" "):]
 	print_str = "User, " + reported_usr + ", reported by " + str(member) + "\n\t" + reported_msg
 	await client.send_message(report_channel, print_str)
 
