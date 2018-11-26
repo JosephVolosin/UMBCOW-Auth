@@ -463,7 +463,7 @@ async def report(*args):
 	msg_splits = message.split(" ")
 	if len(msg_splits) < 2:
 		await client.send_message(member, "Proper usage is !report User#0000 message")
-	reported_usr = msg_splits
+	reported_usr = msg_splits[1]
 	reported_msg = "".join(msg_splits[2:])
 	print_str = "User, " + reported_usr + ", reported by " + str(member) + "\n\t" + reported_msg
 	await client.send_message(report_channel, print_str)
