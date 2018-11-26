@@ -435,13 +435,12 @@ async def muteall(*args):
 		return
 	# Check for all users in connected voice
 	for c in client.voice_clients:
-		if c.server == server:
-			for vs_usr in c.voice_members:
-				# Mute user
-				await client.server_voice_state(vs_usr, mute=True)
+		for vs_usr in c.channel.voice_members:
+			# Mute user
+			await client.server_voice_state(vs_usr, mute=True)
 
 
-# Unmutes all users in the current voice channel
+# Unmutes all users in the current voice channel.
 @client.command(name="unmuteall",
 				description="Unmutes all useres in the current voice channel",
 				pass_context=True)
@@ -455,10 +454,9 @@ async def unmuteall(*args):
 		return
 	# Check for all users in connected voice
 	for c in client.voice_clients:
-		if c.server == server:
-			for vs_usr in c.voice_members:
-				# Mute user
-				await client.server_voice_state(vs_usr, mute=False)
+		for vs_usr in c.channel.voice_members:
+			# Mute user
+			await client.server_voice_state(vs_usr, mute=False)
 
 # Reports a player that will be shown in the #reports channel
 # Proper input: JosephPV#1111 This is the report message
