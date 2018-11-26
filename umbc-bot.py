@@ -421,8 +421,6 @@ async def leave(*args):
 	else:
 		await client.send_message(member, "Sorry, I'm not in a voice channel!")
 
-'''
-TODO - Implement this
 # Mutes all users in the current voice channel
 @client.command(name="muteall",
 				description="Mute all users in current voice channel.",
@@ -430,23 +428,40 @@ TODO - Implement this
 async def muteall(*args):
 
 	member = args[0].message.author
-	# check for officer privilege
+	server = client.get_server(SERVER_ID)
+	# Check for officer privilege
 	if(str(member) not in OFFICERS):
 		await client.send_message(member, "Sorry, this is an officer only command.")
 		return
+	# Check for all users in connected voice
+	for c in client.voice_clients:
+		for vs_usr in c.channel.voice_members:
+			if str(vs_usr) not in OFFICERS:
+				# Mute user
+				print("\tMuting " + str(vs_usr))
+				await client.server_voice_state(vs_usr, mute=True)
 
-# Unmutes all users in the current voice channel
+
+# Unmutes all users in the current voice channel.
 @client.command(name="unmuteall",
 				description="Unmutes all useres in the current voice channel",
 				pass_context=True)
 async def unmuteall(*args):
 
 	member = args[0].message.author
-	# check for officer privilege
+	server = client.get_server(SERVER_ID)
+	# Check for officer privilege
 	if(str(member) not in OFFICERS):
 		await client.send_message(member, "Sorry, this is an officer only command.")
 		return
-'''
+	# Check for all users in connected voice
+	for c in client.voice_clients:
+		for vs_usr in c.channel.voice_members:
+			# Check if the user is an officer
+			if str(vs_usr) not in OFFICERS:
+				# Unmute user
+				print("\tUnmuting " + str(vs_usr))
+				await client.server_voice_state(vs_usr, mute=False)
 
 # Reports a player that will be shown in the #reports channel
 # Proper input: JosephPV#1111 This is the report message
