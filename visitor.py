@@ -17,17 +17,27 @@ def removeOldVisitors():
     # Compare current visitors checkin times with current time
     f = open(FN, 'r')
     usrs_remove = []
+    lines_remove = []
+    line_count = 0
+
     for l in f:
         l_temp = l.split(",")[2].rstrip()
         cur_name = l.split(",")[1]
         cur_dt = datetime.datetime.strptime(l_temp, TIME_PATTERN)
         cur_dt += datetime.timedelta(minutes=1) # Change to hours=24
         now_dt = datetime.datetime.strptime(now_time_stamp, TIME_PATTERN)
+        # User is past 24-hour check-in
         if(cur_dt < now_dt):
-            remove(l)
+            lines_remove.append(line_count)
             usrs_remove.append(cur_name)
+            # Printout
             print("\tRemoving line:")
             print("\t\t" + l)
+            usrs_remove.append(line_count)
+        line_count += 1
+
+    f.close()
+    removeLines(lines_remove)
     return usrs_remove
 
 # write(newAddition) adds newAddition to the visitors file
@@ -39,20 +49,21 @@ def write(newAddition):
     # Write newAddition
     with open(FN, 'a') as f:
         f.write(newAddition + "," + cur_time_stamp + "\n")
-
-# remove(removal) removes whatever removal is
-def remove(removal):
-
-    with open(FN, 'r') as f:
-        full_lines = f.readlines()
-    try:
-        full_lines.remove(removal)
-    except:
-        print("\tThe removal wasn't found in the visitors file.")
-    clear()
+        
+def removeLines(rm_lines):
+    line_count = 0
+    final_lines = []
+    f = open(FN)
+    # Grab
+    for l in f.readlines():
+        if(line_count not in rm_lines):
+            final_lines.append(l)
+        line_count += 1
+    f.close()
+    # Re-write lines
     with open(FN, 'w') as f:
-        for l in full_lines:
-            f.write(str(l)) + "\n"
+        for l in final_lines:
+            f.write(l)
 
 # checkExistingVisitor(name) checks if the visitor is already checked in with the visitors file
 # True  = Visitor is checked in already

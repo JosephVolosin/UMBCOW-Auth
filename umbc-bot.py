@@ -9,13 +9,14 @@ Constants
 BOT_PREFIX 	   = ('?', '!')
 SERVER_ID 	   = '360868374244491264'
 BOT_CHANNEL_ID = '360880051690143755'
-client 		   = Bot(command_prefix=BOT_PREFIX)
-TWITCH 		   = "https://www.twitch.tv/UMBCOverwatch"
-CONSOLES 	   = ["PC", "XBOX", "PS4"]
-OFFICERS 	   = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
-IAMROLES 	   = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
-				  "Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
-				  "Dallas Fuel", "LA Gladiators", "NY Excelsior", "Florida Mayhem", "Boston Uprising", "SF Shock", "Philadelphia Fusion"]
+REPORT_CHANNEL_ID = '514561663870042123'
+client = Bot(command_prefix=BOT_PREFIX)
+TWITCH = "https://www.twitch.tv/UMBCOverwatch"
+CONSOLES = ["PC", "XBOX", "PS4"]
+OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
+IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
+			"Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
+			"Dallas Fuel", "LA Gladiators", "NY Excelsior", "Florida Mayhem", "Boston Uprising", "SF Shock", "Philadelphia Fusion"]
 
 ''' Helper Methods '''
 # Fetch the bot's token
@@ -225,68 +226,37 @@ async def visitor_add(*args):
 	print(type(member))
 	if(verified_role not in member.roles):
 		print("\t" + str(member) + " tried to add a visitor without being verified.")
-		await client.send_message(member, "You are not allowed to add visitors if you yourself, are a visitor.")
+		await client.send_message(member, "You are not allowed to add visitors if you're unverified. Use !v <Student ID> to verify.")
 		return 0
+	
 	# Check that there was a valid member passed to the bot
 	msg_split = args[0].message.content.split(" ")
-	if(len(msg_split) == 1):
-		print("\tVisitor called without any argument.")
+	if(len(msg_split) != 2):
+		print("\tVisitor called with improper arguments.")
 		await client.send_message(member, "Proper use of this command is '!visitor <discord-tag>'")
 		return 0
 	visitor_tag = msg_split[1]
 	visitor_mem = None
+	
 	# Check that this member is a member of the server
 	for mem in server.members:
 		if(str(mem) == visitor_tag):
 			visitor_mem = mem
+	
 	# Check that the user was found on the server
 	if(visitor_mem == None):
 		print("\t" + visitor_tag + " was not found on the server.")
 		await client.send_message(member, "Your visitor was not found on this server. Please make sure they've joined.")
 		return 0
+	
 	# Give the visitor the visitor role, remove unverified, write to visitors
 	visitor_role = discord.utils.get(server.roles, name='Visitor')
 	unverified_role = discord.utils.get(server.roles, name='Unverified')
 	await client.add_roles(visitor_mem, visitor_role)
 	await client.remove_roles(visitor_mem, unverified_role)
 	visitor.write(str(member) + "," + str(visitor_mem))
-	await client.send_message(member, "You've been checked in as a visitor for the next 24 hours.")
+	await client.send_message(visitor_mem, "You've been checked in as a visitor for the next 24 hours.")
 	print(str(member) + " gave visitor status to " + str(visitor_mem) + ".")
-
-# Allows users to update their roles in Discord of Rank and Role automatically thru API
-# TODO - Implement this
-'''
-@client.command(name="update",
-				description="Update Overwatch specific roles: rank and role. Proper use is !update Battletag#1234",
-				pass_context=True)
-async def update(*args):
-
-	message = args[0].message
-	member = message.author
-	rank_roles = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster"]
-	role_roles = ["Support", "DPS", "Tank"]
-	# Rank ranges are the tops of each bracket
-	rank_ranges = { "Bronze" : 1500, "Silver" : 2000, "Gold" : 2500, "Platinum" : 3000, "Diamond" : 3500, "Master" : 4000 }
-	# All possible characters, listed by their role, comma delimitted
-	role_chars = { "Support" : "Lucio,Ana,Zenyatta,Moira,Mercy,Brigitte",
-				   "DPS"	 : "Bastion,Doomfist,Genji,Hanzo,Junkrat,McCree,Mei,Pharah,Reaper,Soldier: 76,Sombra,Symettra,Torbjörn,Tracer,Widowmaker",
-				   "Tank"	 : "D.Va,Orisa,Reinhardt,Roadhog,Winston,Wrecking Ball,Zarya" }
-	
-	print(str(member) + " is updating roles..")
-	# Try to pull battletag
-	tmp_split = message.content.split(" ")
-	btag = ""
-	console = ""
-	try:
-		console = tmp_split[2]
-		if((console in CONSOLES) == False):
-			await client.send_message(member, "Didn't receive a proper console. Please use PC|XBOX|PS4.")
-		btag = tmp_split[3]
-	except:
-		await client.send_message(member, "Proper use is !update PC|XBOX|PS4 Battletag#1234")
-	# Expected input is !update <BTAG>
-	stats = overwatch.stats.query('pc', btag)
-'''
 
 # Lets users set roles that are designated in IAMROLES
 @client.command(name="iam",
@@ -479,6 +449,21 @@ async def unmuteall(*args):
 		return
 '''
 
+# Reports a player that will be shown in the #reports channel
+# Proper input: JosephPV#1111 This is the report message
+@client.command(name="report",
+				description="Reports a member",
+				pass_context=True)
+async def report(*args):
+	member = args[0].message.author
+	server = client.get_server(SERVER_ID)
+	message = args[0].message.content
+	report_channel = server.get_channel(REPORT_CHANNEL_ID)
+	# Split on a space because we hope the user entered properly
+	reported_usr = message.split([:message.find(" ")])
+	reported_msg = message.split([message.find(" "):])
+	print_str = "User, " + reported_usr + ", reported by " + str(member) + "\n\t" + reported_msg
+	await client.send_message(report_channel, print_str)
 
 ''' Run '''
 if __name__ == '__main__':
