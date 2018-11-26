@@ -401,7 +401,6 @@ async def join(*args):
 		await client.send_message(member, "Sorry, I'm already in a voice channel!")
 
 # Bot leaves your current voice channel
-# TODO - This doesn't work
 @client.command(name="leave",
 				description="Leaves the current voice channel.",
 				pass_context=True)
@@ -414,11 +413,11 @@ async def leave(*args):
 		await client.send_message(member, "Sorry, this is an officer only command.")
 		return
 	# Check that the bot is connected to voice
-	if(client.is_voice_connected(server) == True):
-		for vc in client.voice_clients:
-			if(vc == server):
+	if(client.is_voice_connected(server)):
+		for c in client.voice_clients:
+			if c.server == server:
 				await client.send_message(member, "Leaving voice chat..")
-				return await vc.disconnect()
+				return await c.disconnect()
 	else:
 		await client.send_message(member, "Sorry, I'm not in a voice channel!")
 
