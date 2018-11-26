@@ -6,16 +6,16 @@ from discord.ext.commands import Bot
 '''
 Constants
 '''
-BOT_PREFIX = ('?', '!')
-SERVER_ID = '360868374244491264'
+BOT_PREFIX 	   = ('?', '!')
+SERVER_ID 	   = '360868374244491264'
 BOT_CHANNEL_ID = '360880051690143755'
-client = Bot(command_prefix=BOT_PREFIX)
-TWITCH = "https://www.twitch.tv/UMBCOverwatch"
-CONSOLES = ["PC", "XBOX", "PS4"]
-OFFICERS = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
-IAMROLES = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
-			"Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
-			"Dallas Fuel", "LA Gladiators", "NY Excelsior", "Florida Mayhem", "Boston Uprising", "SF Shock", "Philadelphia Fusion"]
+client 		   = Bot(command_prefix=BOT_PREFIX)
+TWITCH 		   = "https://www.twitch.tv/UMBCOverwatch"
+CONSOLES 	   = ["PC", "XBOX", "PS4"]
+OFFICERS 	   = ["JosephPV#1306", "octomaidly#0008", "JereDawg99#5649", "Maineo1#9403"]
+IAMROLES 	   = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Support", "DPS", "Tank",
+				  "Flex", "Defense", "Seoul Dynasty", "Shanghai Dragons", "London Spitfire", "Houston Outlaws", "LA Valiant",
+				  "Dallas Fuel", "LA Gladiators", "NY Excelsior", "Florida Mayhem", "Boston Uprising", "SF Shock", "Philadelphia Fusion"]
 
 ''' Helper Methods '''
 # Fetch the bot's token
@@ -127,7 +127,6 @@ async def verify(*args):
 			# Check whitelist
 			res = authenticate.checkExistingAuth(str(author), message)
 			if(res == 0):
-				# Log to terminal TODO - create log file?
 				print("\t" + str(author) + ": sent an already used token.")
 				print("\t\t" + message)
 				await client.send_message(author, "Sorry, your e-mail/ID has already been used to authenticate an account. Please contact an officer if this is wrong.")
@@ -189,14 +188,12 @@ async def on_message(*args):
 	server = client.get_server(SERVER_ID)
 	visitor_role	= discord.utils.get(server.roles, name='Visitor')
 	unverified_role	= discord.utils.get(server.roles, name='Unverified')
-	# TODO - Check visitors for cleanup
 	
 	usrs_remove = visitor.removeOldVisitors()
 	for usr in usrs_remove:
 		try:
 			member = server.get_member_named(usr)
 			await client.remove_roles(member, visitor_role)
-			await asyncio.sleep(3)
 			await client.add_roles(member, unverified_role)
 		except:
 			print("Attempted to remove visitor status from, " + usr + ", but they were not found.")
@@ -251,7 +248,6 @@ async def visitor_add(*args):
 	visitor_role = discord.utils.get(server.roles, name='Visitor')
 	unverified_role = discord.utils.get(server.roles, name='Unverified')
 	await client.add_roles(visitor_mem, visitor_role)
-	await asyncio.sleep(2) # Arbitrary sleep for making sure it actually gives role 
 	await client.remove_roles(visitor_mem, unverified_role)
 	visitor.write(str(member) + "," + str(visitor_mem))
 	await client.send_message(member, "You've been checked in as a visitor for the next 24 hours.")
@@ -435,6 +431,7 @@ async def join(*args):
 		await client.send_message(member, "Sorry, I'm already in a voice channel!")
 
 # Bot leaves your current voice channel
+# TODO - This doesn't work
 @client.command(name="leave",
 				description="Leaves the current voice channel.",
 				pass_context=True)
