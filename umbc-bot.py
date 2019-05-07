@@ -490,4 +490,7 @@ if __name__ == '__main__':
 		print("Token was not found, therefore bot can't run.")
 		exit()
 	else:
-		client.run(token)
+		try:
+			client.run(token)
+		except:
+			client.run(token)
