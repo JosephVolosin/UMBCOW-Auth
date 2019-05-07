@@ -479,12 +479,19 @@ async def report(*args):
 	print_str = "User, " + reported_usr + ", reported by " + str(member) + "\n\t" + reported_msg
 	await client.send_message(report_channel, print_str)
 
+def main():
+	token = fetchToken()
+	try:
+		client.loop.create_task(list_servers())
+		if(token == 0):
+			print("Token was not found, therefore bot can't run.")
+			exit()
+		else:
+			client.run(token)
+	except:
+		main()  # On failure just re-run
+
 ''' Run '''
 if __name__ == '__main__':
-	token = fetchToken()
-	client.loop.create_task(list_servers())
-	if(token == 0):
-		print("Token was not found, therefore bot can't run.")
-		exit()
-	else:
-		client.run(token)
+	main()
+
