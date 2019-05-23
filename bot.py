@@ -243,7 +243,7 @@ class UMBCBot(discord.Client):
                 server_roles = server.roles
                 rep_role = None
                 for r in server_roles:
-                    if r.name == "University E-Rep:
+                    if r.name == "University E-Rep":
                         rep_role = r
                 if rep_role == None:
                     return
