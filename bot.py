@@ -31,7 +31,8 @@ class UMBCBot(discord.Client):
 
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
-        await self.change_presence(activity=discord.Game(name="Message me '!v UMBC-ID' to verify!"))
+        status = discord.Game("Message me '!v UMBC-ID' to verify!")
+        await self.change_presence(activity=status)
 
     async def on_reaction_remove(self, reaction, user):
 
