@@ -40,7 +40,7 @@ class UMBCBot(discord.Client):
         try:
             member = server.get_member_named(user.name)
         except:
-            await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server, don't talk to me!")
+            await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server!")
             return
         await self.new_member(member)
 
@@ -64,7 +64,7 @@ class UMBCBot(discord.Client):
                 try:
                     member = server.get_member_named(str(message.author))
                 except:
-                    await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server, don't talk to me!")
+                    await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server!")
                     return
                 await self.verify(member, msg_split[1])
 
@@ -242,7 +242,7 @@ class UMBCBot(discord.Client):
                 server_roles = server.roles
                 rep_role = None
                 for r in server_roles:
-                    if r.name == "e-sports Rep":
+                    if r.name == "University E-Rep:
                         rep_role = r
                 if rep_role == None:
                     return
