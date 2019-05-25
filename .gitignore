@@ -1,6 +1,5 @@
-discord-keys.txt
-.vscode
-__pycache__
-whitelist.txt
-visitors.txt
-bracket.txt
+tokens.json
+reps.json
+tokens.json
+verified.json
+visitors.json
