@@ -40,7 +40,7 @@ class UMBCBot(discord.Client):
         try:
             member = server.get_member_named(user.name)
         except:
-            await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server!")
+            await user.send("It doesn't appear you're a member of our UMBC Overwatch server!")
             return
         await self.new_member(member)
 
@@ -77,6 +77,14 @@ class UMBCBot(discord.Client):
                                     + "Instagram: https://www.instagram.com/umbcoverwatch/\n"
                                     + "Overbark Twitter: https://twitter.com/UMBC_Overbark\n"
                                     + "Overbark Twitch: https://www.twitch.tv/umbcesports\n")
+
+        # Help
+        elif "!help" in message.content:
+            print("\tSending help")
+            await message.author.send("Here's my available commands:\n"
+                                    + "`!v UMBC-ID\nAllows the user to verify themself on the server using their UMBC ID`\n"
+                                    + "`!links\nSends the user all the Overwatch club's social media links`\n"
+                                    + "`!help\nSends you this list`\n")
 
     async def validate_visitor(self, member, campus_id):
 
