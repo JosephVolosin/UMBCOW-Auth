@@ -84,7 +84,33 @@ class UMBCBot(discord.Client):
             await message.author.send("Here's my available commands:\n"
                                     + "`!v UMBC-ID\nAllows the user to verify themself on the server using their UMBC ID`\n"
                                     + "`!links\nSends the user all the Overwatch club's social media links`\n"
+                                    + "`!undo\nRemoves the user's name from all registry entries`\n"
                                     + "`!help\nSends you this list`\n")
+
+        # Undo Entry
+        elif "!undo" in message.content:
+            print("\tPerforming undo")
+            # Check for the user's name in each of the registries
+            try:
+                for cur_json_fn in [STUDENTS_JSON, VISITOR_JSON, REPS_JSON]:
+                    with open(cur_json_fn) as cur_json:
+                        cur_data = json.load(cur_json)
+                    if cur_data == None:
+                        raise IOError
+                    if str(message.author) in cur_data.keys():
+                        print("\tFound user '" + str(message.author) + "' in " + cur_json_fn)
+                        # Delete entry
+                        cur_data.pop(str(message.author), None)
+                        with open(cur_json_fn, 'w') as cur_json:
+                            json.dump(cur_data, cur_json, indent=4)
+                        await message.author.send("Your verification was successfully removed!")
+                        return
+            except IOError:
+                print("\tIssue opening a JSON")
+                await message.author.send("Sorry, the bot encountered an error. Please report this to an officer!")
+                return
+            # Reaches here if the name wasn't in any registries
+            await message.author.send("Sorry, we couldn't find your name in any of the registries. If this is an issue, contact and officer!")
 
     async def validate_visitor(self, member, campus_id):
 
