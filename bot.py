@@ -72,9 +72,9 @@ class UMBCBot(discord.Client):
             print("Resuming verification for %s" % (str(message.author)))
             # Get the user as a member of the server
             try:
-                member = server.get_member_named(user.name)
+                member = server.get_member_named(message.author)
             except:
-                await user.send("It doesn't appear you're a member of our UMBC Overwatch server!")
+                await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server!")
                 return
             await self.new_member(member)
 
