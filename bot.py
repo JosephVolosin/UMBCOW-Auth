@@ -68,11 +68,12 @@ class UMBCBot(discord.Client):
                     return
                 await self.verify(member, msg_split[1])
                 
-        elif "!resume" in message.content:
+        elif "!resume" in message.content and str(message.author) != "UMBC-Admin#4154":
             print("Resuming verification for %s" % (str(message.author)))
+            server = self.get_guild(int(SERVER_ID))
             # Get the user as a member of the server
             try:
-                member = server.get_member_named(message.author)
+                member = server.get_member_named(str(message.author))
             except:
                 await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server!")
                 return
