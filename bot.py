@@ -68,6 +68,10 @@ class UMBCBot(discord.Client):
                     return
                 await self.verify(member, msg_split[1])
 
+        elif "!resume" in message.content:
+            print("Resuming verification for %s" % (str(message.author))
+            await self.new_member(message.author)
+
         # Links
         elif "!links" in message.content:
             print("\tSending links")
@@ -256,6 +260,7 @@ class UMBCBot(discord.Client):
             reaction, user = await self.wait_for('reaction_add', timeout=30.0, check=check)
         except asyncio.TimeoutError:
             print("Member join timed out for " + str(member))
+            await member.send("Looks like you're busy, so whenever you want to continue your verification message me !resume and we can try again!")
             return
         else:
             # Handle UMBC students
