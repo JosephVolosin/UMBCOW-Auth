@@ -67,10 +67,16 @@ class UMBCBot(discord.Client):
                     await message.author.send("It doesn't appear you're a member of our UMBC Overwatch server!")
                     return
                 await self.verify(member, msg_split[1])
-
+                
         elif "!resume" in message.content:
-            print("Resuming verification for %s" % (str(message.author))
-            await self.new_member(message.author)
+            print("Resuming verification for %s" % (str(message.author)))
+            # Get the user as a member of the server
+            try:
+                member = server.get_member_named(user.name)
+            except:
+                await user.send("It doesn't appear you're a member of our UMBC Overwatch server!")
+                return
+            await self.new_member(member)
 
         # Links
         elif "!links" in message.content:
