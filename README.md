@@ -2,6 +2,8 @@
 
 Discord authentication for the UMBC Overwatch server. Matches student e-mail with a valid student e-mail. Otherwise, allows a current server member to allow access to a guest or a visitor from another university to register themselves as a representative.
 
+[UMBC Bot in Action](https://www.youtube.com/watch?v=pyTGG5_S9nw)
+
 ## Getting Started
 
 The code is made specifically for the UMBC Overwatch server however if someone wants to run it elsewhere, the following are steps to get the bot up and running.
